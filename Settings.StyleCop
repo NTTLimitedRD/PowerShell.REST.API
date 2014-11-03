@@ -1,0 +1,477 @@
+<StyleCopSettings Version="105">
+	<GlobalSettings>
+		<StringProperty Name="MergeSettingsFiles">NoMerge</StringProperty>
+		<StringProperty Name="Culture">en-GB</StringProperty>
+		<CollectionProperty Name="RecognizedWords">
+			<Value>api</Value>
+			<Value>AppId</Value>
+			<Value>aspx</Value>
+			<Value>auth</Value>
+			<Value>Autofac</Value>
+			<Value>Autofac's</Value>
+			<Value>behavior</Value>
+			<Value>bindable</Value>
+			<Value>Caa</Value>
+			<Value>callback</Value>
+			<Value>callbacks</Value>
+			<Value>composable</Value>
+			<Value>css</Value>
+			<Value>csv</Value>
+			<Value>Daa</Value>
+			<Value>DAC</Value>
+			<Value>dacpac</Value>
+			<Value>Db</Value>
+			<Value>deprovision</Value>
+			<Value>deprovisioned</Value>
+			<Value>deprovisioning</Value>
+			<Value>dequeue</Value>
+			<Value>deserialisation</Value>
+			<Value>deserialising</Value>
+			<Value>Dir</Value>
+			<Value>DMS</Value>
+			<Value>dns</Value>
+			<Value>Enum</Value>
+			<Value>enums</Value>
+			<Value>eg</Value>
+			<Value>finaliser</Value>
+			<Value>Fx</Value>
+			<Value>Guid</Value>
+			<Value>ie</Value>
+			<Value>implementors</Value>
+			<Value>intelli</Value>
+			<Value>intellidoc</Value>
+			<Value>journaled</Value>
+			<Value>Json</Value>
+			<Value>lync</Value>
+			<Value>maa</Value>
+			<Value>materialiser</Value>
+			<Value>materialisers</Value>
+			<Value>Moq</Value>
+			<Value>nav</Value>
+			<Value>non-journaled</Value>
+			<Value>non-nullable</Value>
+			<Value>nullable</Value>
+			<Value>nullables</Value>
+			<Value>nuspec</Value>
+			<Value>provisionable</Value>
+			<Value>queryable</Value>
+			<Value>queryables</Value>
+			<Value>resharper</Value>
+			<Value>resharper's</Value>
+			<Value>reprovision</Value>
+			<Value>reprovisioned</Value>
+			<Value>reprovisioning</Value>
+			<Value>resource-deprovisioning</Value>
+			<Value>user-deprovisioning</Value>
+			<Value>asset-deprovisioning</Value>
+			<Value>organisation-deprovisioning</Value>
+			<Value>service-deprovisioning</Value>
+			<Value>Sf</Value>
+			<Value>sharepoint</Value>
+			<Value>specifier</Value>
+			<Value>Sql</Value>
+			<Value>startup</Value>
+			<Value>sts</Value>
+			<Value>serializer</Value>
+			<Value>templated</Value>
+			<Value>Thinktecture</Value>
+			<Value>treeview</Value>
+			<Value>timestamped</Value>
+			<Value>unassign</Value>
+			<Value>unassigning</Value>
+			<Value>uninitialised</Value>
+			<Value>unscoped</Value>
+			<Value>upn</Value>
+			<Value>vs</Value>
+			<Value>Var</Value>
+			<Value>Utc</Value>
+			<Value>untyped</Value>
+			<Value>unsignalled</Value>
+			<Value>usa</Value>
+			<Value>wctx</Value>
+			<Value>wixobj</Value>
+			<Value>wix</Value>
+			<Value>xmlns</Value>
+		</CollectionProperty>
+	</GlobalSettings>
+	<Parsers>
+		<Parser ParserId="StyleCop.CSharp.CsParser">
+			<ParserSettings>
+				<BooleanProperty Name="AnalyzeDesignerFiles">False</BooleanProperty>
+			</ParserSettings>
+		</Parser>
+	</Parsers>
+	<Analyzers>
+		<Analyzer AnalyzerId="StyleCop.CSharp.LayoutRules">
+			<Rules>
+				<Rule Name="CurlyBracketsMustNotBeOmitted">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="ClosingCurlyBracketMustBeFollowedByBlankLine">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="CodeMustNotContainMultipleBlankLinesInARow">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="SingleLineCommentsMustNotBeFollowedByBlankLine">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="ElementDocumentationHeaderMustBePrecededByBlankLine">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="SingleLineCommentMustBePrecededByBlankLine">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="ElementsMustBeSeparatedByBlankLine">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+			</Rules>
+			<AnalyzerSettings />
+		</Analyzer>
+		<Analyzer AnalyzerId="StyleCop.CSharp.DocumentationRules">
+			<Rules>
+				<Rule Name="ConstructorSummaryDocumentationMustBeginWithStandardText">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="FileMustHaveHeader">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="PropertySummaryDocumentationMustMatchAccessors">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="DocumentationHeadersMustNotContainBlankLines">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="PropertySummaryDocumentationMustOmitSetAccessorWithRestrictedAccess">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="DocumentationTextMustNotBeEmpty">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="DocumentationMustMeetCharacterPercentage">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="DestructorSummaryDocumentationMustBeginWithStandardText">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="FileHeaderMustShowCopyright">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="FileHeaderMustHaveCopyrightText">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="FileHeaderMustContainFileName">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="FileHeaderFileNameDocumentationMustMatchFileName">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="FileHeaderMustHaveValidCompanyText">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="FileHeaderFileNameDocumentationMustMatchTypeName">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+			</Rules>
+			<AnalyzerSettings />
+		</Analyzer>
+		<Analyzer AnalyzerId="StyleCop.CSharp.MaintainabilityRules">
+			<Rules>
+				<Rule Name="AccessModifierMustBeDeclared">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="DebugAssertMustProvideMessageText">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="FileMayOnlyContainASingleNamespace">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="ArithmeticExpressionsMustDeclarePrecedence">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="ConditionalExpressionsMustDeclarePrecedence">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="RemoveUnnecessaryCode">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="FieldsMustBePrivate">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="StatementMustNotUseUnnecessaryParenthesis">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="FileMayOnlyContainASingleClass">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+			</Rules>
+			<AnalyzerSettings />
+		</Analyzer>
+		<Analyzer AnalyzerId="StyleCop.CSharp.NamingRules">
+			<Rules>
+				<Rule Name="FieldNamesMustNotBeginWithUnderscore">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="FieldNamesMustNotContainUnderscore">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="ElementMustBeginWithUpperCaseLetter">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="ElementMustBeginWithLowerCaseLetter">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="InterfaceNamesMustBeginWithI">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="ConstFieldNamesMustBeginWithUpperCaseLetter">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="NonPrivateReadonlyFieldsMustBeginWithUpperCaseLetter">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="FieldNamesMustNotUseHungarianNotation">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="FieldNamesMustBeginWithLowerCaseLetter">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="AccessibleFieldsMustBeginWithUpperCaseLetter">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="VariableNamesMustNotBePrefixed">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+			</Rules>
+			<AnalyzerSettings>
+				<CollectionProperty Name="Hungarian">
+					<Value>db</Value>
+					<Value>e</Value>
+					<Value>is</Value>
+				</CollectionProperty>
+			</AnalyzerSettings>
+		</Analyzer>
+		<Analyzer AnalyzerId="StyleCop.CSharp.ReadabilityRules">
+			<Rules>
+				<Rule Name="UseBuiltInTypeAlias">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="ClosingParenthesisMustBeOnLineOfLastParameter">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="PrefixLocalCallsWithThis">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="PrefixCallsCorrectly">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="ParameterMustNotSpanMultipleLines">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="ClosingParenthesisMustBeOnLineOfOpeningParenthesis">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="SplitParametersMustStartOnLineAfterDeclaration">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="QueryClauseMustBeginOnNewLineWhenPreviousClauseSpansMultipleLines">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="DoNotPlaceRegionsWithinElements">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="BlockStatementsMustNotContainEmbeddedComments">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="BlockStatementsMustNotContainEmbeddedRegions">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+			</Rules>
+			<AnalyzerSettings />
+		</Analyzer>
+		<Analyzer AnalyzerId="StyleCop.CSharp.SpacingRules">
+			<Rules>
+				<Rule Name="TabsMustNotBeUsed">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="DocumentationLinesMustBeginWithSingleSpace">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="ClosingParenthesisMustBeSpacedCorrectly">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="OpeningParenthesisMustBeSpacedCorrectly">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+			</Rules>
+			<AnalyzerSettings />
+		</Analyzer>
+		<Analyzer AnalyzerId="StyleCop.CSharp.OrderingRules">
+			<Rules>
+				<Rule Name="UsingDirectivesMustBePlacedWithinNamespace">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="ElementsMustBeOrderedByAccess">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="SystemUsingDirectivesMustBePlacedBeforeOtherUsingDirectives">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="StaticElementsMustAppearBeforeInstanceElements">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="ElementsMustAppearInTheCorrectOrder">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="ConstantsMustAppearBeforeFields">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="DeclarationKeywordsMustFollowOrder">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="ProtectedMustComeBeforeInternal">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="PropertyAccessorsMustFollowOrder">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+				<Rule Name="EventAccessorsMustFollowOrder">
+					<RuleSettings>
+						<BooleanProperty Name="Enabled">False</BooleanProperty>
+					</RuleSettings>
+				</Rule>
+			</Rules>
+			<AnalyzerSettings />
+		</Analyzer>
+	</Analyzers>
+</StyleCopSettings>

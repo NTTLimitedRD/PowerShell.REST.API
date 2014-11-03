@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="StyleCop" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<UsingTask AssemblyFile="$(MSBuildExtensionsPath)\..\StyleCop 4.7\StyleCop.dll" TaskName="StyleCopTask"/>
+
+	<ItemGroup>
+		<_ProjectFile
+			Include="Portal\**\*.csproj"
+			Exclude="packages\**\*.csproj"
+		>
+			<!-- Collect all StyleCop results in a single folder -->
+			<ResultsFile>$(MSBuildProjectDirectory)\%(Filename).StyleCopViolations.xml</ResultsFile>
+		</_ProjectFile>
+	</ItemGroup>
+
+	<!-- Runs once for each project file discovered by the _ProjectFile item group -->
+	<Target Name="StyleCop" Returns="%(_ProjectFile.Identity)">
+		<ItemGroup>
+			<_SourceFile Remove="@(_SourceFile)" />
+		</ItemGroup>
+
+		<!-- Clean up existing results file, if necessary. -->
+		<PropertyGroup>
+			<_ResultsFile>%(_ProjectFile.ResultsFile)</_ResultsFile>
+		</PropertyGroup>
+		<Delete Files="$(_ResultsFile)" Condition="Exists('$(_ResultsFile)')" />
+
+		<!-- This target gets us all the source files in a C# project -->
+		<MSBuild Projects="@(_ProjectFile)" Targets="SourceFilesProjectOutputGroup" Properties="Configuration=Release;Platform=AnyCPU">
+			<Output
+				TaskParameter="TargetOutputs"
+				ItemName="_SourceFile" />
+		</MSBuild>
+
+		<Message
+			Importance="high"
+			Text="Excluding '%(_SourceFile.Identity)' from StyleCop analysis..."
+			Condition=" '%(_SourceFile.ExcludeFromStyleCop)' == 'true' "
+		/>
+
+		<ItemGroup>
+			<_SourceFile
+				Remove="@(_SourceFile)"
+				Condition=" '%(_SourceFile.ExcludeFromStyleCop)' == 'true' "
+			/>
+		</ItemGroup>
+
+		<Message
+			Importance="normal"
+			Text="Running StyleCop for project '@(_ProjectFile)'..."
+		/>
+
+		<StyleCopTask
+			ProjectFullPath="@(_ProjectFile)"
+			SourceFiles="@(_SourceFile)"
+			ForceFullAnalysis="true"
+			CacheResults="false"
+			OutputFile="$(_ResultsFile)"
+		/>
+	</Target>
+</Project>
