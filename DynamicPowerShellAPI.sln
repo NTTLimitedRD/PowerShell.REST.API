@@ -23,8 +23,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPowerShellApi.Host",
 		{0E96DEE8-3BD5-4396-8C84-52AAF60EB270} = {0E96DEE8-3BD5-4396-8C84-52AAF60EB270}
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{3B7DE65B-BE40-437A-A1D9-AC27E880E354}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPowerShellApi.Owin", "Owin\DynamicPowerShellApi.Owin.csproj", "{891AFC4A-9927-467E-A7DB-BD373F782142}"
 EndProject
 Global
