@@ -166,6 +166,7 @@ Function Build-PackageFromProject([string]$PackageProjectFile, [string]$ProjectC
 # }
 
 # Build all packages
+Build-Project -ProjectFile '..\DynamicPowerShellApi.Host\DynamicPowerShellApi.Host.csproj'
 Build-PackageFromNuSpec -NuSpecFile '..\DynamicPowerShellApi.Host\PowerShellAPI.Host.nuspec'
 
 # If ($haveOutputFolder)
