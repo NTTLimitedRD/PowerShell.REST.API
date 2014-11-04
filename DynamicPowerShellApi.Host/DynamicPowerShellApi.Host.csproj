@@ -66,6 +66,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SolutionAssemblyInfo.cs">
+      <Link>SolutionAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="DynamicPowerShellApiService.cs">
       <SubType>Component</SubType>
     </Compile>
