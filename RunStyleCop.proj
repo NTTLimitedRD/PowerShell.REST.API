@@ -4,7 +4,7 @@
 
 	<ItemGroup>
 		<_ProjectFile
-			Include="Portal\**\*.csproj"
+			Include=".\**\*.csproj"
 			Exclude="packages\**\*.csproj"
 		>
 			<!-- Collect all StyleCop results in a single folder -->
