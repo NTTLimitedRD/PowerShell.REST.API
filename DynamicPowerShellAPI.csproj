@@ -81,6 +81,9 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+	<PropertyGroup>
+		<EtwManifestForceAll>true</EtwManifestForceAll>
+	</PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
