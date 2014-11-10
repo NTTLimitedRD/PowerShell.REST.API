@@ -84,6 +84,10 @@
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
+	<PropertyGroup>
+    <EtwManifestForceAll>true</EtwManifestForceAll>
+  </PropertyGroup>
+
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>Aperture.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>

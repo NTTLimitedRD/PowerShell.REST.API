@@ -91,7 +91,16 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+
+	<ItemGroup>
+		<Manifests Include="$(SolutionDir)bin\Debug\DynamicPowerShellApi.DDCloud-*" >
+			<Display>false</Display>
+		</Manifests>
+	</ItemGroup>
+	<Target Name="CopyETWManifests" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<Copy SourceFiles="@(Manifests)" DestinationFolder="$(OutputPath)"/>
+	</Target>
+	<Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
