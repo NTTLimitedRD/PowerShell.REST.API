@@ -79,6 +79,9 @@
   <ItemGroup>
     <None Include="Aperture.snk" />
     <None Include="App.config" />
+    <None Include="Install.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="PowerShellAPI.Host.nuspec" />
   </ItemGroup>
@@ -92,15 +95,15 @@
       <Name>DynamicPowerShellApi.Owin</Name>
     </ProjectReference>
   </ItemGroup>
-	<ItemGroup>
-		<Manifests Include="$(SolutionDir)ETW\*" >
-			<Display>true</Display>
-		</Manifests>
-	</ItemGroup>
-	<Target Name="CopyETWManifests" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<Copy SourceFiles="@(Manifests)" DestinationFolder="$(OutputPath)ETW\"/>
-	</Target>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />  
+  <ItemGroup>
+    <Manifests Include="$(SolutionDir)ETW\*">
+      <Display>true</Display>
+    </Manifests>
+  </ItemGroup>
+  <Target Name="CopyETWManifests" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Copy SourceFiles="@(Manifests)" DestinationFolder="$(OutputPath)ETW\" />
+  </Target>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -1,0 +1,1 @@
+& wevtutil.exe im ETW/DynamicPowerShellApi.DDCloud-DynamicPowershellApi.etwManifest.man /rf:"ETW/DynamicPowerShellApi.DDCloud-DynamicPowershellApi.etwManifest.dll" /mf:"ETW/DynamicPowerShellApi.DDCloud-DynamicPowershellApi.etwManifest.dll"
