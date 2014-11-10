@@ -79,9 +79,9 @@
   <ItemGroup>
     <None Include="Aperture.snk" />
     <None Include="App.config" />
-    <None Include="Install.ps1">
+    <Content Include="PostDeploy.ps1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="packages.config" />
     <None Include="PowerShellAPI.Host.nuspec" />
   </ItemGroup>
