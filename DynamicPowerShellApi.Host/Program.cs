@@ -124,7 +124,7 @@ namespace DynamicPowerShellApi.Host
 				    invocationException.InnerException.GetType() == typeof(CertificateNotFoundException))
 				{
 					Console.WriteLine("Cannot find certificate to authenticate requests - " + invocationException.InnerException.Message);
-					DynamicPowershellApiEvents.Raise.ConfigurationError("Cannot find certificate to authenticate requests - " + certMissing.Message);
+					DynamicPowershellApiEvents.Raise.ConfigurationError("Cannot find certificate to authenticate requests - " + invocationException.InnerException.Message);
 					Console.ReadLine();
 					return -1;
 				}
