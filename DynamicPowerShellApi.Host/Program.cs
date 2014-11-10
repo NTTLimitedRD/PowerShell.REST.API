@@ -92,10 +92,9 @@ namespace DynamicPowerShellApi.Host
 			}
 			catch (Exception eUnexpected)
 			{
-				Debug.WriteLine(eUnexpected);
 				Console.Error.WriteLine(eUnexpected);
 				Console.ReadLine();
-
+				DynamicPowershellApiEvents.Raise.UnhandledException(eUnexpected.Message);
 				return 1;
 			}
 		}
@@ -115,7 +114,7 @@ namespace DynamicPowerShellApi.Host
 			catch (CertificateNotFoundException certMissing)
 			{
 				Console.WriteLine("Cannot find certificate to authenticate requests - " + certMissing.Message);
-
+				DynamicPowershellApiEvents.Raise.ConfigurationError("Cannot find certificate to authenticate requests - " + certMissing.Message);
 				Console.ReadLine();
 				return -1;
 			}
@@ -125,6 +124,7 @@ namespace DynamicPowerShellApi.Host
 				    invocationException.InnerException.GetType() == typeof(CertificateNotFoundException))
 				{
 					Console.WriteLine("Cannot find certificate to authenticate requests - " + invocationException.InnerException.Message);
+					DynamicPowershellApiEvents.Raise.ConfigurationError("Cannot find certificate to authenticate requests - " + certMissing.Message);
 					Console.ReadLine();
 					return -1;
 				}
@@ -132,16 +132,11 @@ namespace DynamicPowerShellApi.Host
 			catch (Exception ex)
 			{
 				Console.WriteLine("Error starting service - " + ex.Message);
+				DynamicPowershellApiEvents.Raise.UnhandledException(ex.Message);
 				Console.ReadLine();
 				return -1;
 			}
-
-			Debug.WriteLine("Owin web is running. Press enter to stop...");
-
 			Console.ReadLine();
-
-			Debug.WriteLine("Owin web has stopped.");
-
 			return 0;
 		}
 
@@ -153,8 +148,35 @@ namespace DynamicPowerShellApi.Host
 		/// </returns>
 		static int RunAsService()
 		{
-			ServiceBase.Run(new DynamicPowerShellApiService());
-
+			try
+			{
+				ServiceBase.Run(new DynamicPowerShellApiService());
+			}
+			catch (CertificateNotFoundException certMissing)
+			{
+				Console.WriteLine("Cannot find certificate to authenticate requests - " + certMissing.Message);
+				DynamicPowershellApiEvents.Raise.ConfigurationError("Cannot find certificate to authenticate requests - " + certMissing.Message);
+				Console.ReadLine();
+				return -1;
+			}
+			catch (System.Reflection.TargetInvocationException invocationException)
+			{
+				if (invocationException.InnerException != null &&
+					invocationException.InnerException.GetType() == typeof(CertificateNotFoundException))
+				{
+					Console.WriteLine("Cannot find certificate to authenticate requests - " + invocationException.InnerException.Message);
+					DynamicPowershellApiEvents.Raise.ConfigurationError("Cannot find certificate to authenticate requests - " + invocationException.InnerException.Message);
+					Console.ReadLine();
+					return -1;
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Error starting service - " + ex.Message);
+				DynamicPowershellApiEvents.Raise.UnhandledException(ex.Message);
+				Console.ReadLine();
+				return -1;
+			}
 			return 0;
 		}
 
@@ -233,8 +255,6 @@ namespace DynamicPowerShellApi.Host
 				}
 				else
 				{
-					Debug.WriteLine("Installation state file 'DpsApiMonitorServiceInstallState.bin' is missing; uninstall may not succeed.", "Warning");
-
 					stateStore = new Hashtable();
 				}
 

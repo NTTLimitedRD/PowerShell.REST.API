@@ -81,8 +81,10 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+	<!-- ETW Overrides - ANT -->
 	<PropertyGroup>
 		<EtwManifestForceAll>true</EtwManifestForceAll>
+		<EtwManifestOutDir>$(SolutionDir)ETW\</EtwManifestOutDir>
 	</PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>

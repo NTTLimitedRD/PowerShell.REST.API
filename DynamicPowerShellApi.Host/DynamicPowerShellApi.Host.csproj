@@ -93,12 +93,12 @@
     </ProjectReference>
   </ItemGroup>
 	<ItemGroup>
-		<Manifests Include="$(SolutionDir)bin\Debug\DynamicPowerShellApi.DDCloud-*" >
-			<Display>false</Display>
+		<Manifests Include="$(SolutionDir)ETW\*" >
+			<Display>true</Display>
 		</Manifests>
 	</ItemGroup>
 	<Target Name="CopyETWManifests" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<Copy SourceFiles="@(Manifests)" DestinationFolder="$(OutputPath)"/>
+		<Copy SourceFiles="@(Manifests)" DestinationFolder="$(OutputPath)ETW\"/>
 	</Target>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />  
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

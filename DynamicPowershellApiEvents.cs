@@ -93,12 +93,45 @@
 			Event(
 				Events.SnapinException,
 				Message = "Started execution of powershell script file {0}",
-				Level = EventLevel.Informational
+				Level = EventLevel.Error
 				)
 		]
 		public void SnapinException(string errorMessage)
 		{
 			WriteEvent(Events.SnapinException, errorMessage);
+		}
+
+
+		/// <summary>
+		/// Unhandled Exception message
+		/// </summary>
+		/// <param name="errorMessage">The error message.</param>
+		[
+			Event(
+				Events.UnhandledException,
+				Message = "Unhandled exception in service {0}",
+				Level = EventLevel.Error
+				)
+		]
+		public void UnhandledException(string errorMessage)
+		{
+			WriteEvent(Events.UnhandledException, errorMessage);
+		}
+
+		/// <summary>
+		/// Configuration error.
+		/// </summary>
+		/// <param name="errorMessage">The error message.</param>
+		[
+			Event(
+				Events.ConfigurationError,
+				Message = "Cannot start service from configuration error-  {0}",
+				Level = EventLevel.Error
+			)
+		]
+		public void ConfigurationError(string errorMessage)
+		{
+			WriteEvent(Events.ConfigurationError, errorMessage);
 		}
 
 		/// <summary>
@@ -120,6 +153,16 @@
 			///	Snap in exception occurred
 			/// </summary>
 			public const int SnapinException = 1002;
+
+			/// <summary>
+			/// The unhandled exception message code.
+			/// </summary>
+			public const int UnhandledException = 1003;
+
+			/// <summary>
+			/// The configuration error message code.
+			/// </summary>
+			public const int ConfigurationError = 1004;
 		}
 	}
 }
