@@ -9,6 +9,6 @@
         <description>API for Running PowerShell</description>
     </metadata>
 	<files>
-		<file src="bin\Release\**\*.*" target="Build" />
+		<file src="bin\Release\**\*.*" target="" />
 	</files>
 </package>
