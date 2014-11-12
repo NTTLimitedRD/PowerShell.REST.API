@@ -108,7 +108,7 @@
 					return Task.FromResult(lastMessage == null ? string.Empty : lastMessage.ToString());
 				}
 			}
-			catch(Exception ex)
+			catch
 			{
 			    throw;
 			}
