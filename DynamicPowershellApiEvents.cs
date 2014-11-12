@@ -57,7 +57,8 @@
 			Event(
 				Events.ReceivedRequest,
 				Message = "Received request: {0}",
-				Level = EventLevel.Informational
+				Level = EventLevel.Informational,
+                Channel = EventChannel.Operational
 			)
 		]
 		public void ReceivedRequest(string requestUri)
@@ -75,7 +76,8 @@
 			Event(
 				Events.PowershellStart, 
 				Message = "Started execution of powershell script file {0}", 
-				Level = EventLevel.Informational
+				Level = EventLevel.Informational,
+                Channel = EventChannel.Operational
 				)
 		]
 		public void ExecutingPowerShellScript(string powershellPath)
@@ -93,7 +95,8 @@
 			Event(
 				Events.SnapinException,
 				Message = "Started execution of powershell script file {0}",
-				Level = EventLevel.Error
+				Level = EventLevel.Error,
+                Channel = EventChannel.Operational
 				)
 		]
 		public void SnapinException(string errorMessage)

@@ -108,11 +108,9 @@
 					return Task.FromResult(lastMessage == null ? string.Empty : lastMessage.ToString());
 				}
 			}
-			catch (Exception ex)
+			catch(Exception ex)
 			{
-				Console.WriteLine("Failed to load powershell script : {0}", ex.Message);
-				Console.Write(ex.StackTrace);
-				return null;
+			    throw;
 			}
 		}
 	}
