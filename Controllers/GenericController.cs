@@ -89,19 +89,32 @@ namespace DynamicPowerShellApi.Controllers
             // We now catch an exception from the runner
 		    try
 		    {
-                string output = await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, query.ToList());
+                var output = await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, query.ToList());
+                
+		        if (output.PowerShellReturnedValidData == true)
+		        {                 
+                    JToken token = output.ActualPowerShellData.StartsWith("[") ? (JToken)JArray.Parse(output.ActualPowerShellData) : JObject.Parse(output.ActualPowerShellData);
+		            return new HttpResponseMessage { Content = new JsonContent(token) };
+		        }
+		        else
+		        {                                        
+                    DynamicPowershellApiEvents.Raise.UnhandledException(output.ActualPowerShellData);
 
-                JToken token = output.StartsWith("[") ? (JToken)JArray.Parse(output) : JObject.Parse(output);
-                return new HttpResponseMessage { Content = new JsonContent(token) };
+                    return new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.InternalServerError,
+                        Content = new StringContent(output.ActualPowerShellData)
+                    };    
+		        }
 		    }
 		    catch (Exception ex)
-		    {
+		    {               
                 DynamicPowershellApiEvents.Raise.UnhandledException(ex.Message);
 
 		        return new HttpResponseMessage
 		        {
 		            StatusCode = HttpStatusCode.InternalServerError,
-		            Content = new JsonContent(ex.Message)
+                    Content = new StringContent(ex.Message)
 		        };
 		    }			
 		} 

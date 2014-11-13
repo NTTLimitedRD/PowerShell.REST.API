@@ -104,10 +104,13 @@
 		/// <param name="powershellPath">
 		/// The PowerShell path.
 		/// </param>
+        /// <param name="paramDetails">
+        /// The PowerShell parameters.
+        /// </param>
 		[
 			Event(
 				Events.PowershellStart, 
-				Message = "Started execution of powershell script file {0}", 
+				Message = "Started execution of powershell script file {0} - {1}", 
 				Level = EventLevel.Informational,
                 Channel = EventChannel.Operational
 				)

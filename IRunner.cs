@@ -1,4 +1,6 @@
-﻿namespace DynamicPowerShellApi
+﻿using DynamicPowerShellApi.Model;
+
+namespace DynamicPowerShellApi
 {
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
@@ -23,7 +25,7 @@
 		/// <returns>
 		/// The <see cref="Task"/>.
 		/// </returns>
-		Task<string> ExecuteAsync(
+        Task<PowershellReturn> ExecuteAsync(
 			string filename,
 			string snapin,
 			IList<KeyValuePair<string, string>> parametersList);
