@@ -112,9 +112,9 @@
                 Channel = EventChannel.Operational
 				)
 		]
-		public void ExecutingPowerShellScript(string powershellPath)
+		public void ExecutingPowerShellScript(string powershellPath, string paramDetails)
 		{
-			WriteEvent(Events.PowershellStart, powershellPath);
+            WriteEvent(Events.PowershellStart, powershellPath, paramDetails);
 		}
 
 		/// <summary>

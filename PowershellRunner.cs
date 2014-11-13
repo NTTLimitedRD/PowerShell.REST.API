@@ -1,4 +1,6 @@
-﻿namespace DynamicPowerShellApi
+﻿using System.Text;
+
+namespace DynamicPowerShellApi
 {
 	using System;
 	using System.Collections.Generic;
@@ -37,10 +39,20 @@
 				throw new ArgumentException("Argument cannot be null, empty or composed of whitespaces only", "filename");
 			if (parametersList == null)
 				throw new ArgumentNullException("parametersList", "Argument cannot be null");
-			
+
+            var sb = new StringBuilder();
+
+		    foreach (KeyValuePair<string, string> kvp in parametersList)
+		    {
+		        if (sb.Length > 0)
+		            sb.Append(";");
+
+		        sb.Append(string.Format("{0}:{1}", kvp.Key, kvp.Value));
+		    }
+
 			DynamicPowershellApiEvents
 				.Raise
-				.ExecutingPowerShellScript(filename);
+				.ExecutingPowerShellScript(filename, sb.ToString());
 
 			try
 			{
