@@ -44,7 +44,8 @@
 
 			try
 			{
-				string scriptContent = File.ReadAllText(Path.Combine("ScriptRepository", filename));
+			    string strBaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                string scriptContent = File.ReadAllText(Path.Combine(strBaseDirectory, Path.Combine("ScriptRepository", filename)));
 
 				RunspaceConfiguration rsConfig = RunspaceConfiguration.Create();
 

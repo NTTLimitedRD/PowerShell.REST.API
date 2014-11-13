@@ -109,6 +109,9 @@ namespace DynamicPowerShellApi.Host
 		{
 			try
 			{
+                // Raise a start service
+                DynamicPowershellApiEvents.Raise.StartUp();
+
 				Startup.Start();
 			}
 			catch (CertificateNotFoundException certMissing)
@@ -137,6 +140,10 @@ namespace DynamicPowerShellApi.Host
 				return -1;
 			}
 			Console.ReadLine();
+
+            // Raise a stop service
+            DynamicPowershellApiEvents.Raise.Stop();
+
 			return 0;
 		}
 
@@ -150,7 +157,10 @@ namespace DynamicPowerShellApi.Host
 		{
 			try
 			{
-				ServiceBase.Run(new DynamicPowerShellApiService());
+				// Raise a start service
+                DynamicPowershellApiEvents.Raise.StartUp();
+
+                ServiceBase.Run(new DynamicPowerShellApiService());
 			}
 			catch (CertificateNotFoundException certMissing)
 			{

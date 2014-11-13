@@ -96,6 +96,8 @@ namespace DynamicPowerShellApi.Controllers
 		    }
 		    catch (Exception ex)
 		    {
+                DynamicPowershellApiEvents.Raise.UnhandledException(ex.Message);
+
 		        return new HttpResponseMessage
 		        {
 		            StatusCode = HttpStatusCode.InternalServerError,

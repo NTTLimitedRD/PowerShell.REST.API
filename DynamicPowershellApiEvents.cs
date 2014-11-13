@@ -47,6 +47,38 @@
 		{
 		}
 
+        /// <summary>
+        /// The start-up event
+        /// </summary>                
+        [
+            Event(
+                Events.ApiStartup,
+                Message = "Started API",
+                Level = EventLevel.Informational,
+                Channel = EventChannel.Operational
+            )
+        ]
+        public void StartUp()
+        {
+            WriteEvent(Events.ApiStartup);
+        }
+
+        /// <summary>
+        /// The received request.
+        /// </summary>                
+        [
+            Event(
+                Events.ApiStop,
+                Message = "Stopped API",
+                Level = EventLevel.Informational,
+                Channel = EventChannel.Operational
+            )
+        ]
+        public void Stop()
+        {
+            WriteEvent(Events.ApiStop);
+        }
+
 		/// <summary>
 		/// The received request.
 		/// </summary>
@@ -94,7 +126,7 @@
 		[
 			Event(
 				Events.SnapinException,
-				Message = "Started execution of powershell script file {0}",
+				Message = "Snapin Exception Raised {0}",
 				Level = EventLevel.Error,
                 Channel = EventChannel.Operational
 				)
@@ -166,6 +198,16 @@
 			/// The configuration error message code.
 			/// </summary>
 			public const int ConfigurationError = 1004;
+
+            /// <summary>
+            /// The start-up event
+            /// </summary>
+            public const int ApiStartup = 1005;
+
+            /// <summary>
+            /// The stop event
+            /// </summary>
+            public const int ApiStop = 1006;
 		}
 	}
 }
