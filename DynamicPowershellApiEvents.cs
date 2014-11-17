@@ -92,13 +92,31 @@
 		[
 			Event(
 				Events.SnapinException,
-				Message = "Started execution of powershell script file {0}",
-				Level = EventLevel.Informational
+				Message = "Snapin exception: {0}",
+				Level = EventLevel.Error
 				)
 		]
 		public void SnapinException(string errorMessage)
 		{
 			WriteEvent(Events.SnapinException, errorMessage);
+		}
+
+		/// <summary>
+		/// PowerShell script execution exception.
+		/// </summary>
+		/// <param name="errorMessage">
+		/// The error message.
+		/// </param>
+		[
+			Event(
+				Events.ScriptExecutionException,
+				Message = " PowerShell script execution exception: {0}",
+				Level = EventLevel.Error
+				)
+		]
+		public void ScriptExecutionException(string errorMessage)
+		{
+			WriteEvent(Events.ScriptExecutionException, errorMessage);
 		}
 
 		/// <summary>
@@ -120,6 +138,11 @@
 			///	Snap in exception occurred
 			/// </summary>
 			public const int SnapinException = 1002;
+
+			/// <summary>
+			///	Script Execution Exception
+			/// </summary>
+			public const int ScriptExecutionException = 1003;
 		}
 	}
 }

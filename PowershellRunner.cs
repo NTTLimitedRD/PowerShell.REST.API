@@ -29,8 +29,6 @@
 		/// <returns>
 		/// The <see cref="Task"/>.
 		/// </returns>
-		/// <exception cref="PSSnapInException">
-		/// </exception>
 		public Task<string> ExecuteAsync(string filename, string snapin, IList<KeyValuePair<string, string>> parametersList)
 		{
 			if (string.IsNullOrWhiteSpace(filename))
@@ -58,6 +56,7 @@
 						DynamicPowershellApiEvents
 							.Raise
 							.SnapinException(snapInException.Message);
+
 						throw snapInException;
 					}
 				}
@@ -93,6 +92,10 @@
 						{
 							foreach (var error in errors)
 							{
+								DynamicPowershellApiEvents
+									.Raise
+									.ScriptExecutionException(error.ErrorDetails.Message);
+
 								if (error.Exception != null)
 									Console.WriteLine("PowerShell Exception {0} : {1}", error.Exception.Message, error.Exception.StackTrace);
 
@@ -110,6 +113,10 @@
 			}
 			catch (Exception ex)
 			{
+				DynamicPowershellApiEvents
+					.Raise
+					.ScriptExecutionException(ex.Message);
+
 				Console.WriteLine("Failed to load powershell script : {0}", ex.Message);
 				Console.Write(ex.StackTrace);
 				return null;
