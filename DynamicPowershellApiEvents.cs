@@ -84,6 +84,24 @@
 		}
 
 		/// <summary>
+		/// Loading SnapIn
+		/// </summary>
+		/// <param name="snapin">
+		/// Snapin name.
+		/// </param>
+		[
+			Event(
+				Events.LoadingSnapIn,
+				Message = "Loading {0} snapin.",
+				Level = EventLevel.Informational
+				)
+		]
+		public void LoadingSnapIn(string snapin)
+		{
+			WriteEvent(Events.LoadingSnapIn, snapin);
+		}
+
+		/// <summary>
 		/// The snap in exception log.
 		/// </summary>
 		/// <param name="errorMessage">
@@ -143,6 +161,11 @@
 			///	Script Execution Exception
 			/// </summary>
 			public const int ScriptExecutionException = 1003;
+
+			/// <summary>
+			///	Loading Snapin
+			/// </summary>
+			public const int LoadingSnapIn = 1004;
 		}
 	}
 }

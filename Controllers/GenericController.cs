@@ -1,4 +1,6 @@
-﻿namespace DynamicPowerShellApi.Controllers
+﻿using System.Diagnostics;
+
+namespace DynamicPowerShellApi.Controllers
 {
 	using System;
 	using System.Collections.Generic;
@@ -84,12 +86,25 @@
 			if (method.Parameters.Any(param => query.All(q => q.Key != param.Name)))
 				throw new MissingParametersException("Cannot find all parameters required.");
 
-			string output = await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, query.ToList());
-			if (output == null)
-				throw new Exception("Error with the powershell script output");
+			try
+			{
+				var output = await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, query.ToList());	
+			
+				var token = output.StartsWith("[") ? (JToken)JArray.Parse(output) : JObject.Parse(output);
 
-			JToken token = output.StartsWith("[") ? (JToken)JArray.Parse(output) : JObject.Parse(output);
-			return new HttpResponseMessage { Content = new JsonContent(token) };
+				return new HttpResponseMessage { Content = new JsonContent(token) };
+			}
+			catch (Exception exception)
+			{
+				DynamicPowershellApiEvents
+					.Raise
+					.ScriptExecutionException(exception.Message);
+
+				Debug.WriteLine(exception.Message);
+				Debug.WriteLine(exception.StackTrace);
+
+				throw new Exception("Error with the PowerShell script output.");
+			}
 		} 
 	}
 }
