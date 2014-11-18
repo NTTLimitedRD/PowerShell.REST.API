@@ -87,12 +87,12 @@
 		/// Loading SnapIn
 		/// </summary>
 		/// <param name="snapin">
-		/// Snapin name.
+		/// SnapIn name.
 		/// </param>
 		[
 			Event(
 				Events.LoadingSnapIn,
-				Message = "Loading {0} snapin.",
+				Message = "Loading {0} SnapIn.",
 				Level = EventLevel.Informational
 				)
 		]
@@ -163,7 +163,7 @@
 			public const int ScriptExecutionException = 1003;
 
 			/// <summary>
-			///	Loading Snapin
+			///	Loading SnapIn
 			/// </summary>
 			public const int LoadingSnapIn = 1004;
 		}
