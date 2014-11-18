@@ -103,7 +103,11 @@ namespace DynamicPowerShellApi.Controllers
 				Debug.WriteLine(exception.Message);
 				Debug.WriteLine(exception.StackTrace);
 
-				throw new Exception("Error with the PowerShell script output.");
+				throw new Exception(
+					String.Format(
+						"Error running PowerShell script. Check '{0}' Event Source for more information.", 
+						DynamicPowershellApiEvents.EventSourceName
+					));
 			}
 		} 
 	}
