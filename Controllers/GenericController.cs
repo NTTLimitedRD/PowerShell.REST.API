@@ -1,18 +1,16 @@
-﻿using System.Diagnostics;
+﻿using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace DynamicPowerShellApi.Controllers
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Net.Http;
-	using System.Threading.Tasks;
-	using System.Web.Http;
-
-	using DynamicPowerShellApi.Configuration;
-	using DynamicPowerShellApi.Exceptions;
-
-	using Newtonsoft.Json.Linq;
+	using Configuration;
+	using Exceptions;
 
 	/// <summary>
 	/// Generic controller for running PowerShell commands.
@@ -39,7 +37,10 @@ namespace DynamicPowerShellApi.Controllers
 		/// </param>
 		public GenericController(IRunner powershellRunner)
 		{
-			this._powershellRunner = powershellRunner;
+			if (powershellRunner == null) 
+				throw new ArgumentNullException("powershellRunner");
+
+			_powershellRunner = powershellRunner;
 		}
 
 		/// <summary>
