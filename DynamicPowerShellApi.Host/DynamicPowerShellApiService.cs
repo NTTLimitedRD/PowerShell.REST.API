@@ -13,7 +13,7 @@
 		/// <summary>
 		/// The server.
 		/// </summary>
-		private IDisposable server;
+		private IDisposable _server;
 
 		/// <summary>
 		///		The Windows service name.
@@ -42,7 +42,7 @@
 		/// </param>
 		protected override void OnStart(string[] args)
 		{
-			this.server = Startup.Start();
+			this._server = Startup.Start();
 		}
 
 		/// <summary>
@@ -50,7 +50,7 @@
 		/// </summary>
 		protected override void OnStop()
 		{
-			if (this.server != null) this.server.Dispose();
+			if (this._server != null) this._server.Dispose();
 
 			base.OnStop();
 		}

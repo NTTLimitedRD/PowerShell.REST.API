@@ -38,7 +38,7 @@ namespace DynamicPowerShellApi
 
 			if (parametersList == null)
 				throw new ArgumentNullException("parametersList", "Argument cannot be null");
-			
+
 			DynamicPowershellApiEvents
 				.Raise
 				.ExecutingPowerShellScript(filename);
@@ -51,7 +51,7 @@ namespace DynamicPowerShellApi
 					.Raise
 					.LoadingSnapIn(snapin);
 
-				PSSnapInException snapInException;				
+				PSSnapInException snapInException;
 				rsConfig.AddPSSnapIn(snapin, out snapInException);
 
 				if (snapInException != null)
@@ -74,11 +74,11 @@ namespace DynamicPowerShellApi
 				}
 
 				powerShellInstance
-					.AddScript( 
+					.AddScript(
 						File.ReadAllText(Path.Combine("ScriptRepository", filename))
 					);
 
-				parametersList.ForEach(item => 
+				parametersList.ForEach(item =>
 					// ReSharper disable once AccessToDisposedClosure
 					powerShellInstance.AddParameter(
 							item.Key,
@@ -103,7 +103,7 @@ namespace DynamicPowerShellApi
 						throw new Exception("PowerShell script failed with unknown error(s).");
 					}
 
-					errors.ForEach(error => 
+					errors.ForEach(error =>
 						DynamicPowershellApiEvents
 							.Raise
 							.ScriptExecutionException(error.ErrorDetails.Message));
@@ -112,7 +112,7 @@ namespace DynamicPowerShellApi
 					if (exception != null)
 						throw exception;
 				}
-					
+
 				var lastMessage = psOutput.LastOrDefault();
 				return Task
 					.FromResult(
