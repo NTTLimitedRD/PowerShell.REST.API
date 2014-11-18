@@ -73,8 +73,8 @@
 		/// </param>
 		[
 			Event(
-				Events.PowershellStart, 
-				Message = "Started execution of powershell script file {0}", 
+				Events.PowershellStart,
+				Message = "Started execution of powershell script file {0}",
 				Level = EventLevel.Informational
 				)
 		]

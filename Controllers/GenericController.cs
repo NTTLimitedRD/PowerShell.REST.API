@@ -66,7 +66,11 @@ namespace DynamicPowerShellApi.Controllers
 				.ReceivedRequest(Request.RequestUri.ToString());
 
 			if (Request.RequestUri.Segments.Length < 4)
-				throw new MalformedUriException(string.Format("There is {0} segments but must be at least 4 segments in the URI.", Request.RequestUri.Segments.Length));
+				throw new MalformedUriException(
+					string.Format(
+						"There is {0} segments but must be at least 4 segments in the URI.", 
+						Request.RequestUri.Segments.Length
+					));
 
 			string apiName = Request.RequestUri.Segments[2].Replace("/", string.Empty);
 			string methodName = Request.RequestUri.Segments[3].Replace("/", string.Empty);
@@ -105,7 +109,7 @@ namespace DynamicPowerShellApi.Controllers
 
 				throw new Exception(
 					String.Format(
-						"Error running PowerShell script. Check '{0}' Event Source for more information.", 
+						"Error running PowerShell script. Check '{0}' Event Source for more information.",
 						DynamicPowershellApiEvents.EventSourceName
 					));
 			}
