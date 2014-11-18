@@ -68,7 +68,7 @@ namespace DynamicPowerShellApi.Controllers
 			if (Request.RequestUri.Segments.Length < 4)
 				throw new MalformedUriException(
 					string.Format(
-						"There is {0} segments but must be at least 4 segments in the URI.", 
+						"There is {0} segments but must be at least 4 segments in the URI.",
 						Request.RequestUri.Segments.Length
 					));
 
@@ -92,8 +92,8 @@ namespace DynamicPowerShellApi.Controllers
 
 			try
 			{
-				var output = await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, query.ToList());	
-			
+				var output = await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, query.ToList());
+
 				var token = output.StartsWith("[") ? (JToken)JArray.Parse(output) : JObject.Parse(output);
 
 				return new HttpResponseMessage { Content = new JsonContent(token) };
@@ -113,6 +113,6 @@ namespace DynamicPowerShellApi.Controllers
 						DynamicPowershellApiEvents.EventSourceName
 					));
 			}
-		} 
+		}
 	}
 }
