@@ -47,37 +47,37 @@
 		{
 		}
 
-        /// <summary>
-        /// The start-up event
-        /// </summary>                
-        [
-            Event(
-                Events.ApiStartup,
-                Message = "Started API",
-                Level = EventLevel.Informational,
-                Channel = EventChannel.Operational
-            )
-        ]
-        public void StartUp()
-        {
-            WriteEvent(Events.ApiStartup);
-        }
+		/// <summary>
+		/// The start-up event
+		/// </summary>                
+		[
+			Event(
+				Events.ApiStartup,
+				Message = "Started API",
+				Level = EventLevel.Informational,
+				Channel = EventChannel.Operational
+			)
+		]
+		public void StartUp()
+		{
+			WriteEvent(Events.ApiStartup);
+		}
 
-        /// <summary>
-        /// The received request.
-        /// </summary>                
-        [
-            Event(
-                Events.ApiStop,
-                Message = "Stopped API",
-                Level = EventLevel.Informational,
-                Channel = EventChannel.Operational
-            )
-        ]
-        public void Stop()
-        {
-            WriteEvent(Events.ApiStop);
-        }
+		/// <summary>
+		/// The received request.
+		/// </summary>                
+		[
+			Event(
+				Events.ApiStop,
+				Message = "Stopped API",
+				Level = EventLevel.Informational,
+				Channel = EventChannel.Operational
+			)
+		]
+		public void Stop()
+		{
+			WriteEvent(Events.ApiStop);
+		}
 
 		/// <summary>
 		/// The received request.
@@ -90,7 +90,7 @@
 				Events.ReceivedRequest,
 				Message = "Received request: {0}",
 				Level = EventLevel.Informational,
-                Channel = EventChannel.Operational
+				Channel = EventChannel.Operational
 			)
 		]
 		public void ReceivedRequest(string requestUri)
@@ -99,25 +99,44 @@
 		}
 
 		/// <summary>
+		/// The PowerShell script has finished.
+		/// </summary>
+		/// <param name="message">
+		/// The message to raise.
+		/// </param>        
+		[
+			Event(
+				Events.PowershellStop, 
+				Message = "Stopped execution of powershell {0}", 
+				Level = EventLevel.Verbose,
+				Channel = EventChannel.Operational
+				)
+		]
+		public void PowerShellScriptFinalised(string message)
+		{
+			WriteEvent(Events.PowershellStop, message);
+		}
+
+		/// <summary>
 		/// Execute the PowerShell script.
 		/// </summary>
 		/// <param name="powershellPath">
 		/// The PowerShell path.
 		/// </param>
-        /// <param name="paramDetails">
-        /// The PowerShell parameters.
-        /// </param>
+		/// <param name="paramDetails">
+		/// The PowerShell parameters.
+		/// </param>
 		[
 			Event(
-				Events.PowershellStart, 
-				Message = "Started execution of powershell script file {0} - {1}", 
+				Events.PowershellStart,
+				Message = "Started execution of powershell script file {0} - {1}",
 				Level = EventLevel.Informational,
-                Channel = EventChannel.Operational
+				Channel = EventChannel.Operational
 				)
 		]
 		public void ExecutingPowerShellScript(string powershellPath, string paramDetails)
 		{
-            WriteEvent(Events.PowershellStart, powershellPath, paramDetails);
+			WriteEvent(Events.PowershellStart, powershellPath, paramDetails);
 		}
 
 		/// <summary>
@@ -131,7 +150,7 @@
 				Events.SnapinException,
 				Message = "Snapin Exception Raised {0}",
 				Level = EventLevel.Error,
-                Channel = EventChannel.Operational
+				Channel = EventChannel.Operational
 				)
 		]
 		public void SnapinException(string errorMessage)
@@ -173,6 +192,22 @@
 		}
 
 		/// <summary>
+		/// Configuration error.
+		/// </summary>
+		/// <param name="errorMessage">The error message.</param>
+		[
+			Event(
+				Events.VerboseMessaging,
+				Message = "Verbose Message - {0}",
+				Level = EventLevel.Verbose
+			)
+		]
+		public void VerboseMessaging(string errorMessage)
+		{
+			WriteEvent(Events.VerboseMessaging, errorMessage);
+		}
+
+		/// <summary>
 		///		Event Id constants.
 		/// </summary>
 		public static class Events
@@ -202,15 +237,25 @@
 			/// </summary>
 			public const int ConfigurationError = 1004;
 
-            /// <summary>
-            /// The start-up event
-            /// </summary>
-            public const int ApiStartup = 1005;
+			/// <summary>
+			/// The start-up event
+			/// </summary>
+			public const int ApiStartup = 1005;
 
-            /// <summary>
-            /// The stop event
-            /// </summary>
-            public const int ApiStop = 1006;
+			/// <summary>
+			/// The stop event
+			/// </summary>
+			public const int ApiStop = 1006;
+
+			/// <summary>
+			///	Started the PowerShell script.
+			/// </summary>
+			public const int PowershellStop = 1007;
+
+			/// <summary>
+			///	Started the PowerShell script.
+			/// </summary>
+			public const int VerboseMessaging = 1008;
 		}
 	}
 }

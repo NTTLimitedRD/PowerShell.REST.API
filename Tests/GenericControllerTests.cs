@@ -68,8 +68,8 @@ namespace DynamicPowerShellApi.Tests
 				m => m.ExecuteAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IList<KeyValuePair<string, string>>>()))
 				.ReturnsAsync(new PowershellReturn
 				{
-                    PowerShellReturnedValidData = true,
-				    ActualPowerShellData = returnValue.ToString()
+					PowerShellReturnedValidData = true,
+					ActualPowerShellData = returnValue.ToString()
 				});
 
 			var ioc = createContainer(cb => cb.RegisterInstance(runnerMock.Object));

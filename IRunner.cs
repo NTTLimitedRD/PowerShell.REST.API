@@ -25,7 +25,7 @@ namespace DynamicPowerShellApi
 		/// <returns>
 		/// The <see cref="Task"/>.
 		/// </returns>
-        Task<PowershellReturn> ExecuteAsync(
+		Task<PowershellReturn> ExecuteAsync(
 			string filename,
 			string snapin,
 			IList<KeyValuePair<string, string>> parametersList);

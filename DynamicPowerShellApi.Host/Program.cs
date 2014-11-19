@@ -109,8 +109,8 @@ namespace DynamicPowerShellApi.Host
 		{
 			try
 			{
-                // Raise a start service
-                DynamicPowershellApiEvents.Raise.StartUp();
+				// Raise a start service
+				DynamicPowershellApiEvents.Raise.StartUp();
 
 				Startup.Start();
 			}
@@ -124,7 +124,7 @@ namespace DynamicPowerShellApi.Host
 			catch (System.Reflection.TargetInvocationException invocationException)
 			{
 				if (invocationException.InnerException != null &&
-				    invocationException.InnerException.GetType() == typeof(CertificateNotFoundException))
+					invocationException.InnerException.GetType() == typeof(CertificateNotFoundException))
 				{
 					Console.WriteLine("Cannot find certificate to authenticate requests - " + invocationException.InnerException.Message);
 					DynamicPowershellApiEvents.Raise.ConfigurationError("Cannot find certificate to authenticate requests - " + invocationException.InnerException.Message);
@@ -141,8 +141,8 @@ namespace DynamicPowerShellApi.Host
 			}
 			Console.ReadLine();
 
-            // Raise a stop service
-            DynamicPowershellApiEvents.Raise.Stop();
+			// Raise a stop service
+			DynamicPowershellApiEvents.Raise.Stop();
 
 			return 0;
 		}
@@ -158,9 +158,9 @@ namespace DynamicPowerShellApi.Host
 			try
 			{
 				// Raise a start service
-                DynamicPowershellApiEvents.Raise.StartUp();
+				DynamicPowershellApiEvents.Raise.StartUp();
 
-                ServiceBase.Run(new DynamicPowerShellApiService());
+				ServiceBase.Run(new DynamicPowerShellApiService());
 			}
 			catch (CertificateNotFoundException certMissing)
 			{
@@ -190,10 +190,10 @@ namespace DynamicPowerShellApi.Host
 			return 0;
 		}
 
-		///  <summary>
+		/// <summary>
 		/// 		Register the Windows service.
-		///  </summary>
-		///  <param name="serviceUser">Service user</param>
+		/// </summary>
+		/// <param name="serviceUser">Service user</param>
 		/// <param name="servicePassword">Service password</param>
 		static void InstallService(string serviceUser, string servicePassword)
 		{
