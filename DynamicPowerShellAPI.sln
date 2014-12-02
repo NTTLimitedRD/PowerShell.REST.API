@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPowerShellApi", "DynamicPowerShellApi.csproj", "{0E96DEE8-3BD5-4396-8C84-52AAF60EB270}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D2619791-8E23-488D-B72F-BEEDEA2129B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPowerShellAPI.Tests", "Tests\DynamicPowerShellAPI.Tests.csproj", "{9A7A8CEB-1F21-418B-BB00-EF41E4918F90}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0E96DEE8-3BD5-4396-8C84-52AAF60EB270} = {0E96DEE8-3BD5-4396-8C84-52AAF60EB270}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPowerShellApi.IntegrationTests", "Tests\DynamicPowerShellApi.IntegrationTests\DynamicPowerShellApi.IntegrationTests.csproj", "{BFE5A883-2FB3-429C-8B7A-5F98B6092B8A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0E96DEE8-3BD5-4396-8C84-52AAF60EB270} = {0E96DEE8-3BD5-4396-8C84-52AAF60EB270}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPowerShellApi.Host", "DynamicPowerShellApi.Host\DynamicPowerShellApi.Host.csproj", "{E36E1718-BDA9-435B-8AE9-8E251DF90EF7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{891AFC4A-9927-467E-A7DB-BD373F782142} = {891AFC4A-9927-467E-A7DB-BD373F782142}
+		{0E96DEE8-3BD5-4396-8C84-52AAF60EB270} = {0E96DEE8-3BD5-4396-8C84-52AAF60EB270}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPowerShellApi.Owin", "Owin\DynamicPowerShellApi.Owin.csproj", "{891AFC4A-9927-467E-A7DB-BD373F782142}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E96DEE8-3BD5-4396-8C84-52AAF60EB270}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E96DEE8-3BD5-4396-8C84-52AAF60EB270}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E96DEE8-3BD5-4396-8C84-52AAF60EB270}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E96DEE8-3BD5-4396-8C84-52AAF60EB270}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A7A8CEB-1F21-418B-BB00-EF41E4918F90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A7A8CEB-1F21-418B-BB00-EF41E4918F90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A7A8CEB-1F21-418B-BB00-EF41E4918F90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A7A8CEB-1F21-418B-BB00-EF41E4918F90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BFE5A883-2FB3-429C-8B7A-5F98B6092B8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFE5A883-2FB3-429C-8B7A-5F98B6092B8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFE5A883-2FB3-429C-8B7A-5F98B6092B8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFE5A883-2FB3-429C-8B7A-5F98B6092B8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E36E1718-BDA9-435B-8AE9-8E251DF90EF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E36E1718-BDA9-435B-8AE9-8E251DF90EF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E36E1718-BDA9-435B-8AE9-8E251DF90EF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E36E1718-BDA9-435B-8AE9-8E251DF90EF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{891AFC4A-9927-467E-A7DB-BD373F782142}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{891AFC4A-9927-467E-A7DB-BD373F782142}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{891AFC4A-9927-467E-A7DB-BD373F782142}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{891AFC4A-9927-467E-A7DB-BD373F782142}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9A7A8CEB-1F21-418B-BB00-EF41E4918F90} = {D2619791-8E23-488D-B72F-BEEDEA2129B3}
+		{BFE5A883-2FB3-429C-8B7A-5F98B6092B8A} = {D2619791-8E23-488D-B72F-BEEDEA2129B3}
+	EndGlobalSection
+EndGlobal

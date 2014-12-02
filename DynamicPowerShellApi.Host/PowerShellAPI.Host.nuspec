@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>PowerShellAPI.Host</id>
+        <version>$version$</version>
+        <authors>Anthony Shaw</authors>
+        <owners>Dimension Data</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>API for Running PowerShell</description>
+    </metadata>
+	<files>
+		<file src="bin\Release\**\*.*" target="" />
+	</files>
+</package>
