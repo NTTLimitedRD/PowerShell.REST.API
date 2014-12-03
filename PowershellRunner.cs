@@ -109,7 +109,7 @@ namespace DynamicPowerShellApi
 					DynamicPowershellApiEvents.Raise.PowerShellScriptFinalised("The powershell has completed - anlaysing results now");
 
 					// check the other output streams (for example, the error stream)
-					if (powerShellInstance.Streams.Error.Count > 0)
+					if (powerShellInstance.HadErrors)
 					{						
 						// Create a string builder for the errors
 						StringBuilder sb = new StringBuilder();
@@ -132,8 +132,8 @@ namespace DynamicPowerShellApi
 									sb.Append(String.Format("PowerShell Exception {0} : {1}", error.Exception.Message, error.Exception.StackTrace));
 								}
 
-								Console.WriteLine(" Error '{0}'", error.ScriptStackTrace);
-								sb.Append(String.Format(" Error {0}", error.ScriptStackTrace));
+								Console.WriteLine("Error '{0}'", error.ScriptStackTrace);
+								sb.Append(String.Format("Error {0}", error.ScriptStackTrace));
 							}
 						}
 
