@@ -96,15 +96,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Manifests Include="C:\Users\anthony\Source\Repos\DynamicPowerShellAPI\ETW\DynamicPowerShellApi.DDCloud-DynamicPowershellApi.etwManifest.dll">
-      <Display>true</Display>
-    </Manifests>
-    <Manifests Include="C:\Users\anthony\Source\Repos\DynamicPowerShellAPI\ETW\DynamicPowerShellApi.DDCloud-DynamicPowershellApi.etwManifest.man">
-      <Display>true</Display>
-    </Manifests>
-    <Manifests Include="C:\Users\anthony\Source\Repos\DynamicPowerShellAPI\ETW\DynamicPowerShellApi.etwManifests.lst">
-      <Display>true</Display>
-    </Manifests>
+	  <Manifests Include="$(SolutionDir)ETW\*">
+		  <Display>true</Display>
+		</Manifests>
   </ItemGroup>
   <Target Name="CopyETWManifests" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Copy SourceFiles="@(Manifests)" DestinationFolder="$(OutputPath)ETW\" />
