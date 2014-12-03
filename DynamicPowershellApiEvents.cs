@@ -50,8 +50,7 @@
 			Event(
 				Events.ApiStartup,
 				Message = "Started API",
-				Level = EventLevel.Informational,
-				Channel = EventChannel.Operational
+				Level = EventLevel.Informational
 			)
 		]
 		public void StartUp()
@@ -66,8 +65,7 @@
 			Event(
 				Events.ApiStop,
 				Message = "Stopped API",
-				Level = EventLevel.Informational,
-				Channel = EventChannel.Operational
+				Level = EventLevel.Informational
 			)
 		]
 		public void Stop()
@@ -85,8 +83,7 @@
 			Event(
 				Events.ReceivedRequest,
 				Message = "Received request: {0}",
-				Level = EventLevel.Informational,
-				Channel = EventChannel.Operational
+				Level = EventLevel.Informational
 			)
 		]
 		public void ReceivedRequest(string requestUri)
@@ -104,8 +101,7 @@
 			Event(
 				Events.PowershellStop, 
 				Message = "Stopped execution of powershell {0}", 
-				Level = EventLevel.Verbose,
-				Channel = EventChannel.Operational
+				Level = EventLevel.Verbose
 				)
 		]
 		public void PowerShellScriptFinalised(string message)
@@ -126,8 +122,7 @@
 			Event(
 				Events.PowershellStart,
 				Message = "Started execution of powershell script file {0} - {1}",
-				Level = EventLevel.Informational,
-				Channel = EventChannel.Operational
+				Level = EventLevel.Informational
 				)
 		]
 		public void ExecutingPowerShellScript(string powershellPath, string paramDetails)
@@ -145,8 +140,7 @@
 			Event(
 				Events.SnapinException,
 				Message = "Snapin Exception Raised {0}",
-				Level = EventLevel.Error,
-				Channel = EventChannel.Operational
+				Level = EventLevel.Error
 				)
 		]
 		public void SnapinException(string errorMessage)

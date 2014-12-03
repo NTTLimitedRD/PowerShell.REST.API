@@ -96,7 +96,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Manifests Include="$(SolutionDir)ETW\*">
+    <Manifests Include="C:\Users\anthony\Source\Repos\DynamicPowerShellAPI\ETW\DynamicPowerShellApi.DDCloud-DynamicPowershellApi.etwManifest.dll">
+      <Display>true</Display>
+    </Manifests>
+    <Manifests Include="C:\Users\anthony\Source\Repos\DynamicPowerShellAPI\ETW\DynamicPowerShellApi.DDCloud-DynamicPowershellApi.etwManifest.man">
+      <Display>true</Display>
+    </Manifests>
+    <Manifests Include="C:\Users\anthony\Source\Repos\DynamicPowerShellAPI\ETW\DynamicPowerShellApi.etwManifests.lst">
       <Display>true</Display>
     </Manifests>
   </ItemGroup>
