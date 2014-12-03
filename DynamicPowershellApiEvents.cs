@@ -199,6 +199,13 @@ namespace DynamicPowerShellApi
 			WriteEvent(Events.VerboseMessaging, errorMessage);
 		}
 
+		/// <summary>
+		/// Capture a PowerShell error.
+		/// </summary>
+		/// <param name="message">The message.</param>
+		/// <param name="stackTrace">The stack trace.</param>
+		/// <param name="file">The file.</param>
+		/// <param name="lineNumber">The line number.</param>
 		[
 			Event(
 				Events.PowerShellError,
