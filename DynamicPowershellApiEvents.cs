@@ -3,8 +3,6 @@
 	using System;
 	using System.Management.Automation.Runspaces;
 
-	using DD.Cloud.Aperture.Platform.Diagnostics;
-
 	using Microsoft.Diagnostics.Tracing;
 
 	/// <summary>
@@ -31,8 +29,6 @@
 		{
 			get
 			{
-				ApertureCorrelationManager.SynchronizeEventSourceActivityIds();
-
 				return Instance.Value;
 			}
 		}
