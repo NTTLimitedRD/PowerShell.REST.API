@@ -268,6 +268,9 @@ namespace DynamicPowerShellApi
 			/// </summary>
 			public const int VerboseMessaging = 1008;
 
+			/// <summary>
+			/// The PowerShell error event
+			/// </summary>
 			public const int PowerShellError = 1010;
 		}
 	}
