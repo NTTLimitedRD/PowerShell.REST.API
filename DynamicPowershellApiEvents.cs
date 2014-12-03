@@ -1,4 +1,6 @@
-﻿namespace DynamicPowerShellApi
+﻿using System.Collections;
+
+namespace DynamicPowerShellApi
 {
 	using System;
 	using System.Management.Automation.Runspaces;
@@ -197,6 +199,18 @@
 			WriteEvent(Events.VerboseMessaging, errorMessage);
 		}
 
+		[
+			Event(
+				Events.PowerShellError,
+				Message = "A Powershell error was raised. Error {0} with trace {1} on file {2}:{3}",
+				Level = EventLevel.Warning
+			)
+		]
+		public void PowerShellError(string message, string stackTrace, string file, int lineNumber)
+		{
+			WriteEvent(Events.PowerShellError, message, stackTrace, file, lineNumber);
+		}
+
 		/// <summary>
 		///		Event Id constants.
 		/// </summary>
@@ -246,6 +260,8 @@
 			///	Started the PowerShell script.
 			/// </summary>
 			public const int VerboseMessaging = 1008;
+
+			public const int PowerShellError = 1010;
 		}
 	}
 }

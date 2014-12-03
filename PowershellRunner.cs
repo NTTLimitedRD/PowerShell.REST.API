@@ -124,6 +124,8 @@ namespace DynamicPowerShellApi
 						{
 							foreach (var error in errors)
 							{
+								DynamicPowershellApiEvents.Raise.PowerShellError(error.ErrorDetails.Message, error.ScriptStackTrace, error.InvocationInfo.PSCommandPath, error.InvocationInfo.ScriptLineNumber);
+
 								if (error.Exception != null)
 								{
 									Console.WriteLine("PowerShell Exception {0} : {1}", error.Exception.Message, error.Exception.StackTrace);
