@@ -60,6 +60,7 @@
 				throw new ArgumentNullException("request", "Argument cannot be null.");
 
 			Console.WriteLine("Selecting controller for request {0}", request.RequestUri);
+			DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Received Request {0}", request.RequestUri));
 			
 			return this.GenericDescriptor;
 		}
