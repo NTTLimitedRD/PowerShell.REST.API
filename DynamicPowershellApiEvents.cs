@@ -155,16 +155,17 @@ namespace DynamicPowerShellApi
 		/// Unhandled Exception message
 		/// </summary>
 		/// <param name="errorMessage">The error message.</param>
+		/// <param name="stackTrace">The stack trace.</param>
 		[
 			Event(
 				Events.UnhandledException,
-				Message = "Unhandled exception in service {0}",
+				Message = "Unhandled exception in service {0}, stack {1}",
 				Level = EventLevel.Error
 				)
 		]
-		public void UnhandledException(string errorMessage)
+		public void UnhandledException(string errorMessage, string stackTrace = "")
 		{
-			WriteEvent(Events.UnhandledException, errorMessage);
+			WriteEvent(Events.UnhandledException, errorMessage, stackTrace);
 		}
 
 		/// <summary>

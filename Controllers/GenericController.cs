@@ -134,7 +134,7 @@
 			}
 			catch (Exception ex)
 			{
-				DynamicPowershellApiEvents.Raise.UnhandledException(ex.Message);
+				DynamicPowershellApiEvents.Raise.UnhandledException(ex.Message, ex.StackTrace);
 
 				return new HttpResponseMessage
 				{
