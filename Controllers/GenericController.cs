@@ -1,4 +1,7 @@
-﻿using System.Net;
+﻿using System.IO;
+using System.Net;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace DynamicPowerShellApi.Controllers
 {
@@ -90,21 +93,60 @@ namespace DynamicPowerShellApi.Controllers
 				DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Cannot find the requested web method: {0}", methodName));
 				throw new WebMethodNotFoundException(string.Format("Cannot find web method: {0}", methodName));
 			}
-
-			// Get our parameters.
-			IEnumerable<KeyValuePair<string, string>> query = Request.GetQueryNameValuePairs();
-			if (method.Parameters.Any(param => query.All(q => q.Key != param.Name)))
+			
+			// Is this a POST method
+			IEnumerable<KeyValuePair<string, string>> query2;			
+			if (Request.Method == HttpMethod.Post)
 			{
-				DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Cannot find all parameters required."));
-				throw new MissingParametersException("Cannot find all parameters required.");
+				string documentContents = await Request.Content.ReadAsStringAsync();
+
+				try
+				{
+					// Work out the parameters from JSON
+					var queryStrings = new Dictionary<string, string>();
+					JToken token = documentContents.StartsWith("[") ? (JToken)JArray.Parse(documentContents) : JObject.Parse(documentContents);
+											
+					foreach (var details in token)
+					{
+						var name = details.First.First.ToString();
+						var value = details.Last.First.ToString();
+						
+						queryStrings.Add(name, value);
+					}
+
+					if (method.Parameters.Any(param => queryStrings.All(q => q.Key != param.Name)))
+					{
+						DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Cannot find all parameters required."));
+						throw new MissingParametersException("Cannot find all parameters required.");
+					}
+											
+					query2 = queryStrings.ToList();
+				}
+				catch (Exception )
+				{
+					DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Cannot find all parameters required."));
+					throw new MissingParametersException("Cannot find all parameters required.");
+				}				
 			}
+			else
+			{
+				// Get our parameters.
+				IEnumerable<KeyValuePair<string, string>> query = Request.GetQueryNameValuePairs();
+				if (method.Parameters.Any(param => query.All(q => q.Key != param.Name)))
+				{
+					DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Cannot find all parameters required."));
+					throw new MissingParametersException("Cannot find all parameters required.");
+				}
+
+				query2 = query;
+			}			
 
 			// We now catch an exception from the runner
 			try
 			{
 				DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Started Executing the runner"));
 
-				var output = await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, query.ToList());
+				var output = await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, query2.ToList());
 				
 				if (output.PowerShellReturnedValidData == true)
 				{                 
