@@ -1,21 +1,15 @@
-﻿using System.IO;
-using System.Net;
-using System.Text;
-using Newtonsoft.Json;
-
-namespace DynamicPowerShellApi.Controllers
+﻿namespace DynamicPowerShellApi.Controllers
 {
+	using Configuration;
+	using Exceptions;
+	using Newtonsoft.Json.Linq;
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Net;
 	using System.Net.Http;
 	using System.Threading.Tasks;
 	using System.Web.Http;
-
-	using DynamicPowerShellApi.Configuration;
-	using DynamicPowerShellApi.Exceptions;
-
-	using Newtonsoft.Json.Linq;
 
 	/// <summary>
 	/// Generic controller for running PowerShell commands.
@@ -43,6 +37,17 @@ namespace DynamicPowerShellApi.Controllers
 		public GenericController(IRunner powershellRunner)
 		{
 			this._powershellRunner = powershellRunner;
+		}
+
+		/// <summary>
+		/// Get a status message
+		/// </summary>
+		/// <returns>OK always</returns>
+		[Route("status")]
+		[AllowAnonymous]
+		public HttpResponseMessage Status()
+		{
+			return new HttpResponseMessage { Content = new StringContent("OK") };
 		}
 
 		/// <summary>
