@@ -106,7 +106,7 @@ namespace DynamicPowerShellApi
 
 					// invoke execution on the pipeline (collecting output)
 					Collection<PSObject> psOutput = powerShellInstance.Invoke();
-					string sMessage = psOutput.LastOrDefault() != null ? Regex.Replace(psOutput.LastOrDefault().ToString(), @"[^\u0000-\u007F]", string.Empty) : "";
+					string sMessage = psOutput.LastOrDefault() != null ? Regex.Replace(psOutput.LastOrDefault().ToString(), @"[^\u0000-\u007F]", string.Empty) : String.Empty;
 
 					DynamicPowershellApiEvents.Raise.PowerShellScriptFinalised("The powershell has completed - anlaysing results now");
 
@@ -130,9 +130,9 @@ namespace DynamicPowerShellApi
 								if (error.ErrorDetails == null )
 									DynamicPowershellApiEvents.Raise.UnhandledException("error.ErrorDetails is null");
 
-								string errorDetails = error.ErrorDetails != null ? error.ErrorDetails.Message : "";
-								string scriptStack = error.ScriptStackTrace != null ? error.ScriptStackTrace : "";
-								string commandPath = error.InvocationInfo.PSCommandPath != null ? error.InvocationInfo.PSCommandPath : "";
+								string errorDetails = error.ErrorDetails != null ? error.ErrorDetails.Message : String.Empty;
+								string scriptStack = error.ScriptStackTrace ?? String.Empty;
+								string commandPath = error.InvocationInfo.PSCommandPath ?? String.Empty;
 
 								if (error.ScriptStackTrace == null)
 									DynamicPowershellApiEvents.Raise.UnhandledException("error.ScriptStackTrace is null");
@@ -161,8 +161,7 @@ namespace DynamicPowerShellApi
 							}
 						}
 						else
-						{
-							
+						{							
 							sb.Append(sMessage);
 						}
 
@@ -193,7 +192,7 @@ namespace DynamicPowerShellApi
 					return Task.FromResult(psGood);
 				}
 			}
-			catch(Exception runnerException)
+			catch (Exception runnerException)
 			{
 				DynamicPowershellApiEvents.Raise.UnhandledException(runnerException.Message, runnerException.StackTrace);
 				throw;
