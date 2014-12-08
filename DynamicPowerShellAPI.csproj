@@ -123,6 +123,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\Authentication.cs" />
@@ -137,6 +138,8 @@
     <Compile Include="DynamicPowershellApiEvents.cs" />
     <Compile Include="Exceptions\CertificateNotFoundException.cs" />
     <Compile Include="Exceptions\MissingParametersException.cs" />
+    <Compile Include="Exceptions\PowerShellException.cs" />
+    <Compile Include="Exceptions\PowerShellExecutionException.cs" />
     <Compile Include="Exceptions\WebApiNotFoundException.cs" />
     <Compile Include="Exceptions\MalformedUriException.cs" />
     <Compile Include="Exceptions\WebMethodNotFoundException.cs" />
@@ -144,6 +147,9 @@
     <Compile Include="GenericControllerSelector.cs" />
     <Compile Include="IRunner.cs" />
     <Compile Include="JsonContent.cs" />
+    <Compile Include="Logging\CrashLog.cs" />
+    <Compile Include="Logging\CrashLogger.cs" />
+    <Compile Include="Logging\ICrashLogger.cs" />
     <Compile Include="Model\PowershellReturn.cs" />
     <Compile Include="PowershellRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

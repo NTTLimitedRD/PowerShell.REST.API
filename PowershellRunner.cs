@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+using DynamicPowerShellApi.Exceptions;
 using DynamicPowerShellApi.Model;
 
 namespace DynamicPowerShellApi
@@ -112,7 +113,9 @@ namespace DynamicPowerShellApi
 
 					// check the other output streams (for example, the error stream)
 					if (powerShellInstance.HadErrors)
-					{						
+					{
+						var runtimeErrors = new List<PowerShellException>();
+
 						// Create a string builder for the errors
 						StringBuilder sb = new StringBuilder();
 
@@ -127,7 +130,7 @@ namespace DynamicPowerShellApi
 						{
 							foreach (var error in errors)
 							{
-								if (error.ErrorDetails == null )
+								if (error.ErrorDetails == null)
 									DynamicPowershellApiEvents.Raise.UnhandledException("error.ErrorDetails is null");
 
 								string errorDetails = error.ErrorDetails != null ? error.ErrorDetails.Message : String.Empty;
@@ -142,13 +145,25 @@ namespace DynamicPowerShellApi
 								else
 								{
 									if (error.InvocationInfo.PSCommandPath == null)
-										DynamicPowershellApiEvents.Raise.UnhandledException("error.InvocationInfo.PSCommandPath is null");	
+										DynamicPowershellApiEvents.Raise.UnhandledException("error.InvocationInfo.PSCommandPath is null");
 								}
-								
+
 								if (error.Exception == null)
 									DynamicPowershellApiEvents.Raise.UnhandledException("error.Exception is null");
 
-								DynamicPowershellApiEvents.Raise.PowerShellError(errorDetails, scriptStack, commandPath, error.InvocationInfo.ScriptLineNumber);
+								DynamicPowershellApiEvents.Raise.PowerShellError(
+									errorDetails, 
+									scriptStack, 
+									commandPath,
+									error.InvocationInfo.ScriptLineNumber);
+
+								runtimeErrors.Add(new PowerShellException()
+								{
+									StackTrace = scriptStack,
+									ErrorMessage = errorDetails,
+									LineNumber = error.InvocationInfo != null ? error.InvocationInfo.ScriptLineNumber : 0,
+									ScriptName = filename
+								});
 
 								if (error.Exception != null)
 								{
@@ -165,21 +180,14 @@ namespace DynamicPowerShellApi
 							sb.Append(sMessage);
 						}
 
-						Console.WriteLine("Creating a new PowershellReturn object");
 						DynamicPowershellApiEvents.Raise.PowerShellScriptFinalised(String.Format("An error was rasied {0}", sb.ToString()));
 
-						// Create a new return value
-						var ps = new PowershellReturn
+						throw new PowerShellExecutionException(sb.ToString())
 						{
-							PowerShellReturnedValidData = false,
-							ActualPowerShellData = sb.ToString()
+							Exceptions = runtimeErrors,
+							LogTime = DateTime.Now
 						};
-
-						// Now return it
-						return Task.FromResult(ps);
 					}
-					
-					PSObject lastMessage = psOutput.LastOrDefault();
 
 					var psGood = new PowershellReturn
 					{
@@ -195,7 +203,20 @@ namespace DynamicPowerShellApi
 			catch (Exception runnerException)
 			{
 				DynamicPowershellApiEvents.Raise.UnhandledException(runnerException.Message, runnerException.StackTrace);
-				throw;
+				throw new PowerShellExecutionException(runnerException.Message)
+				{
+					Exceptions = new List<PowerShellException>()
+					{
+						new PowerShellException
+						{
+							ErrorMessage = runnerException.Message,
+							LineNumber = 0,
+							ScriptName = "PowerShellRunner.cs",
+							StackTrace = runnerException.StackTrace
+						}
+					},
+					LogTime = DateTime.Now
+				};
 			}
 		}
 	}

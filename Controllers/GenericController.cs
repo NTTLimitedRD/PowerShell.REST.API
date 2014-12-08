@@ -1,4 +1,6 @@
-﻿namespace DynamicPowerShellApi.Controllers
+﻿using DynamicPowerShellApi.Logging;
+
+namespace DynamicPowerShellApi.Controllers
 {
 	using Configuration;
 	using Exceptions;
@@ -22,6 +24,11 @@
 		private readonly IRunner _powershellRunner;
 
 		/// <summary>
+		/// Crash logger.
+		/// </summary>
+		private readonly ICrashLogger _crashLogger;
+
+		/// <summary>
 		/// Initialises a new instance of the <see cref="GenericController"/> class.
 		/// </summary>
 		public GenericController()
@@ -34,9 +41,13 @@
 		/// <param name="powershellRunner">
 		/// The PowerShell runner.
 		/// </param>
-		public GenericController(IRunner powershellRunner)
+		/// <param name="crashLogger">
+		///		An implementation of a crash logger.
+		/// </param>
+		public GenericController(IRunner powershellRunner, ICrashLogger crashLogger)
 		{
 			_powershellRunner = powershellRunner;
+			_crashLogger = crashLogger;
 		}
 
 		/// <summary>
@@ -151,30 +162,59 @@
 			{
 				DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Started Executing the runner"));
 
-				var output = await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, query2.ToList());
-				
-				if (output.PowerShellReturnedValidData)
-				{                 
-					JToken token = output.ActualPowerShellData.StartsWith("[") ? (JToken)JArray.Parse(output.ActualPowerShellData) : JObject.Parse(output.ActualPowerShellData);
-					return new HttpResponseMessage { Content = new JsonContent(token) };
-				}
-				
-				DynamicPowershellApiEvents.Raise.UnhandledException(output.ActualPowerShellData);
+				Model.PowershellReturn output =
+					await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, query2.ToList());
+
+				JToken token = output.ActualPowerShellData.StartsWith("[")
+					? (JToken) JArray.Parse(output.ActualPowerShellData)
+					: JObject.Parse(output.ActualPowerShellData);
+				return new HttpResponseMessage { Content = new JsonContent(token) };
+			}
+			catch (PowerShellExecutionException poException)
+			{
+				string logFile = _crashLogger.SaveLog(new CrashLogEntry
+				{
+					Exceptions = poException.Exceptions,
+					LogTime = poException.LogTime,
+					RequestAddress = String.Empty, // TODO: Find a way of getting the request host.
+					RequestMethod = methodName,
+					RequestUrl = Request.RequestUri.ToString()
+				});
+
+				DynamicPowershellApiEvents.Raise.InvalidPowerShellOutput(poException.Message + " logged to " + logFile);
 
 				return new HttpResponseMessage
 				{
 					StatusCode = HttpStatusCode.InternalServerError,
-					Content = new StringContent(output.ActualPowerShellData)
+					Content = new StringContent(poException.Message + " logged to " + logFile)
 				};    
 			}
 			catch (Exception ex)
 			{
-				DynamicPowershellApiEvents.Raise.UnhandledException(ex.Message, ex.StackTrace ?? String.Empty);
+				string logFile = _crashLogger.SaveLog(new CrashLogEntry
+				{
+					Exceptions = new List<PowerShellException>()
+					{
+						new PowerShellException
+						{
+							ErrorMessage = ex.Message,
+							LineNumber = 0,
+							ScriptName = "GenericController.cs",
+							StackTrace = ex.StackTrace
+						}
+					},
+					LogTime = DateTime.Now,
+					RequestAddress = String.Empty, // TODO: Find a way of getting the request host.
+					RequestMethod = methodName,
+					RequestUrl = Request.RequestUri.ToString()
+				});
+
+				DynamicPowershellApiEvents.Raise.UnhandledException(ex.Message + " logged to " + logFile, ex.StackTrace ?? String.Empty);
 
 				return new HttpResponseMessage
 				{
 					StatusCode = HttpStatusCode.InternalServerError,
-					Content = new StringContent(ex.Message)
+					Content = new StringContent(ex.Message + " logged to " + logFile)
 				};
 			}			
 		} 

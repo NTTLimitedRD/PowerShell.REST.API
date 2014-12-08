@@ -150,6 +150,21 @@ namespace DynamicPowerShellApi
 			WriteEvent(Events.SnapinException, errorMessage);
 		}
 
+		/// <summary>
+		/// Invalid PowerShell Output
+		/// </summary>
+		/// <param name="errorMessage">The error message.</param>
+		[
+			Event(
+				Events.InvalidPowerShellOutput,
+				Message = "Invalid PowerShell Output {0}",
+				Level = EventLevel.Error
+				)
+		]
+		public void InvalidPowerShellOutput(string errorMessage)
+		{
+			WriteEvent(Events.UnhandledException, errorMessage);
+		}
 
 		/// <summary>
 		/// Unhandled Exception message
@@ -220,7 +235,7 @@ namespace DynamicPowerShellApi
 		}
 
 		/// <summary>
-		///		Event Id constants.
+		/// Event Id constants.
 		/// </summary>
 		public static class Events
 		{
@@ -273,6 +288,11 @@ namespace DynamicPowerShellApi
 			/// The PowerShell error event
 			/// </summary>
 			public const int PowerShellError = 1010;
+
+			/// <summary>
+			/// Invalid PowerShell output.
+			/// </summary>
+			public const int InvalidPowerShellOutput = 1011;
 		}
 	}
 }
