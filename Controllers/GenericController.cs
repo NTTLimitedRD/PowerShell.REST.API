@@ -36,7 +36,7 @@
 		/// </param>
 		public GenericController(IRunner powershellRunner)
 		{
-			this._powershellRunner = powershellRunner;
+			_powershellRunner = powershellRunner;
 		}
 
 		/// <summary>
@@ -153,21 +153,19 @@
 
 				var output = await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, query2.ToList());
 				
-				if (output.PowerShellReturnedValidData == true)
+				if (output.PowerShellReturnedValidData)
 				{                 
 					JToken token = output.ActualPowerShellData.StartsWith("[") ? (JToken)JArray.Parse(output.ActualPowerShellData) : JObject.Parse(output.ActualPowerShellData);
 					return new HttpResponseMessage { Content = new JsonContent(token) };
 				}
-				else
-				{
-					DynamicPowershellApiEvents.Raise.UnhandledException(output.ActualPowerShellData);
+				
+				DynamicPowershellApiEvents.Raise.UnhandledException(output.ActualPowerShellData);
 
-					return new HttpResponseMessage
-					{
-						StatusCode = HttpStatusCode.InternalServerError,
-						Content = new StringContent(output.ActualPowerShellData)
-					};    
-				}
+				return new HttpResponseMessage
+				{
+					StatusCode = HttpStatusCode.InternalServerError,
+					Content = new StringContent(output.ActualPowerShellData)
+				};    
 			}
 			catch (Exception ex)
 			{
