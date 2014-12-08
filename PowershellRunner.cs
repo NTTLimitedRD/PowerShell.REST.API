@@ -121,8 +121,8 @@ namespace DynamicPowerShellApi
 
 						// error records were written to the error stream.
 						// do something with the items found.
-						Console.WriteLine("PowerShell script crashed with errors:");
-						sb.Append("PowerShell script crashed with errors:" + Environment.NewLine);
+						Console.WriteLine("PowerShell script raised errors:");
+						sb.Append("PowerShell script raised errors:" + Environment.NewLine);
 						sb.Append(String.Format("{0}", sMessage));
 
 						var errors = powerShellInstance.Streams.Error.ReadAll();
@@ -202,6 +202,9 @@ namespace DynamicPowerShellApi
 			}
 			catch (Exception runnerException)
 			{
+				if (runnerException.GetType() == typeof(PowerShellExecutionException))
+					throw;
+
 				DynamicPowershellApiEvents.Raise.UnhandledException(runnerException.Message, runnerException.StackTrace);
 				throw new PowerShellExecutionException(runnerException.Message)
 				{
