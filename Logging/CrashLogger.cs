@@ -21,7 +21,7 @@ namespace DynamicPowerShellApi.Logging
 		/// </summary>
 		public CrashLogger()
 		{
-			_basePath = Path.Combine(Assembly.GetExecutingAssembly().Location, "Logs");
+			_basePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? ".", "Logs");
 
 			if (!Directory.Exists(_basePath))
 			{
