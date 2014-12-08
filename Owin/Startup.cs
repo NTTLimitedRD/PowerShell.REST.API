@@ -1,4 +1,6 @@
-﻿namespace DynamicPowerShellApi.Owin
+﻿using DynamicPowerShellApi.Logging;
+
+namespace DynamicPowerShellApi.Owin
 {
 	using System;
 	using System.Security.Cryptography.X509Certificates;
@@ -71,6 +73,10 @@
 			builder.RegisterType<PowershellRunner>()
 				.As<IRunner>()
 				.InstancePerDependency();
+
+			builder.RegisterType<CrashLogger>()
+				.As<ICrashLogger>()
+				.SingleInstance();
 
 			return builder.Build();
 		}
