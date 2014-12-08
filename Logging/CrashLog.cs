@@ -12,6 +12,39 @@ namespace DynamicPowerShellApi.Logging
 	public class CrashLogEntry
 	{
 		/// <summary>
+		/// The _activity identifier
+		/// </summary>
+		private Guid _activityId;
+
+		/// <summary>
+		/// The activity identifier string (NOT USED)
+		/// </summary>
+		private string _activityIdStr;
+
+		/// <summary>
+		/// Gets or sets the activity identifier.
+		/// </summary>
+		/// <value>
+		/// The activity identifier.
+		/// </value>
+		[XmlElement]
+		public string ActivityId
+		{
+			get { return _activityId.ToString(); }
+			set { _activityIdStr = value; }
+		}
+
+		/// <summary>
+		/// Sets the activity identifier.
+		/// </summary>
+		/// <param name="activityId">The activity identifier.</param>
+		public void SetActivityId(Guid activityId)
+		{
+			_activityId = activityId;
+			_activityIdStr = activityId.ToString();
+		}
+
+		/// <summary>
 		/// Gets or sets the log time.
 		/// </summary>
 		/// <value>

@@ -1,4 +1,5 @@
 ﻿using DynamicPowerShellApi.Logging;
+using DynamicPowerShellApi.Model;
 
 namespace DynamicPowerShellApi.Controllers
 {
@@ -83,7 +84,9 @@ namespace DynamicPowerShellApi.Controllers
 			DynamicPowershellApiEvents
 				.Raise
 				.ReceivedRequest(Request.RequestUri.ToString());
-			
+
+			Guid activityId = Guid.NewGuid();
+
 			if (Request.RequestUri.Segments.Length < 4)
 				throw new MalformedUriException(string.Format("There is {0} segments but must be at least 4 segments in the URI.", Request.RequestUri.Segments.Length));
 
@@ -172,26 +175,37 @@ namespace DynamicPowerShellApi.Controllers
 			}
 			catch (PowerShellExecutionException poException)
 			{
-				string logFile = _crashLogger.SaveLog(new CrashLogEntry
+				CrashLogEntry entry = new CrashLogEntry
 				{
 					Exceptions = poException.Exceptions,
 					LogTime = poException.LogTime,
 					RequestAddress = String.Empty, // TODO: Find a way of getting the request host.
 					RequestMethod = methodName,
 					RequestUrl = Request.RequestUri.ToString()
-				});
+				};
+				entry.SetActivityId(activityId);
+				string logFile = _crashLogger.SaveLog(entry);
 
 				DynamicPowershellApiEvents.Raise.InvalidPowerShellOutput(poException.Message + " logged to " + logFile);
 
 				return new HttpResponseMessage
 				{
 					StatusCode = HttpStatusCode.InternalServerError,
-					Content = new StringContent(poException.Message + " logged to " + logFile)
-				};    
+					Content = new JsonContent(
+						new JObject(
+							new ErrorResponse
+							{
+								ActivityId = activityId,
+								LogFile = logFile,
+								Message = poException.Message
+							}
+						)
+					)
+				};
 			}
 			catch (Exception ex)
 			{
-				string logFile = _crashLogger.SaveLog(new CrashLogEntry
+				CrashLogEntry entry = new CrashLogEntry
 				{
 					Exceptions = new List<PowerShellException>()
 					{
@@ -207,16 +221,27 @@ namespace DynamicPowerShellApi.Controllers
 					RequestAddress = String.Empty, // TODO: Find a way of getting the request host.
 					RequestMethod = methodName,
 					RequestUrl = Request.RequestUri.ToString()
-				});
+				};
+				entry.SetActivityId(activityId);
+				string logFile = _crashLogger.SaveLog(entry);
 
 				DynamicPowershellApiEvents.Raise.UnhandledException(ex.Message + " logged to " + logFile, ex.StackTrace ?? String.Empty);
 
 				return new HttpResponseMessage
 				{
 					StatusCode = HttpStatusCode.InternalServerError,
-					Content = new StringContent(ex.Message + " logged to " + logFile)
+					Content = new JsonContent(
+						new JObject(
+							new ErrorResponse
+							{
+								ActivityId = activityId,
+								LogFile = logFile,
+								Message = ex.Message
+							} 
+						)
+					)
 				};
 			}			
-		} 
+		}
 	}
 }

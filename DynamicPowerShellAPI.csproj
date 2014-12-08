@@ -150,6 +150,7 @@
     <Compile Include="Logging\CrashLog.cs" />
     <Compile Include="Logging\CrashLogger.cs" />
     <Compile Include="Logging\ICrashLogger.cs" />
+    <Compile Include="Model\ErrorResponse.cs" />
     <Compile Include="Model\PowershellReturn.cs" />
     <Compile Include="PowershellRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
