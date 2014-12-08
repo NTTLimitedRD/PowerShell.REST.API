@@ -169,7 +169,7 @@
 			}
 			catch (Exception ex)
 			{
-				DynamicPowershellApiEvents.Raise.UnhandledException(ex.Message, ex.StackTrace);
+				DynamicPowershellApiEvents.Raise.UnhandledException(ex.Message, ex.StackTrace ?? String.Empty);
 
 				return new HttpResponseMessage
 				{

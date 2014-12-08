@@ -16,7 +16,7 @@
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -96,9 +96,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-	  <Manifests Include="$(SolutionDir)ETW\*">
-		  <Display>true</Display>
-		</Manifests>
+    <Manifests Include="$(SolutionDir)ETW\*">
+      <Display>true</Display>
+    </Manifests>
   </ItemGroup>
   <Target Name="CopyETWManifests" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Copy SourceFiles="@(Manifests)" DestinationFolder="$(OutputPath)ETW\" />

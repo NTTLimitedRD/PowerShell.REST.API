@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
 using DynamicPowerShellApi.Model;
 
 namespace DynamicPowerShellApi
@@ -105,6 +106,7 @@ namespace DynamicPowerShellApi
 
 					// invoke execution on the pipeline (collecting output)
 					Collection<PSObject> psOutput = powerShellInstance.Invoke();
+					string sMessage = psOutput.LastOrDefault() != null ? Regex.Replace(psOutput.LastOrDefault().ToString(), @"[^\u0000-\u007F]", string.Empty) : String.Empty;
 
 					DynamicPowershellApiEvents.Raise.PowerShellScriptFinalised("The powershell has completed - anlaysing results now");
 
@@ -118,13 +120,35 @@ namespace DynamicPowerShellApi
 						// do something with the items found.
 						Console.WriteLine("PowerShell script crashed with errors:");
 						sb.Append("PowerShell script crashed with errors:" + Environment.NewLine);
+						sb.Append(String.Format("{0}", sMessage));
 
 						var errors = powerShellInstance.Streams.Error.ReadAll();
 						if (errors != null)
 						{
 							foreach (var error in errors)
 							{
-								DynamicPowershellApiEvents.Raise.PowerShellError(error.ErrorDetails.Message, error.ScriptStackTrace, error.InvocationInfo.PSCommandPath, error.InvocationInfo.ScriptLineNumber);
+								if (error.ErrorDetails == null )
+									DynamicPowershellApiEvents.Raise.UnhandledException("error.ErrorDetails is null");
+
+								string errorDetails = error.ErrorDetails != null ? error.ErrorDetails.Message : String.Empty;
+								string scriptStack = error.ScriptStackTrace ?? String.Empty;
+								string commandPath = error.InvocationInfo.PSCommandPath ?? String.Empty;
+
+								if (error.ScriptStackTrace == null)
+									DynamicPowershellApiEvents.Raise.UnhandledException("error.ScriptStackTrace is null");
+
+								if (error.InvocationInfo == null)
+									DynamicPowershellApiEvents.Raise.UnhandledException("error.InvocationInfo is null");
+								else
+								{
+									if (error.InvocationInfo.PSCommandPath == null)
+										DynamicPowershellApiEvents.Raise.UnhandledException("error.InvocationInfo.PSCommandPath is null");	
+								}
+								
+								if (error.Exception == null)
+									DynamicPowershellApiEvents.Raise.UnhandledException("error.Exception is null");
+
+								DynamicPowershellApiEvents.Raise.PowerShellError(errorDetails, scriptStack, commandPath, error.InvocationInfo.ScriptLineNumber);
 
 								if (error.Exception != null)
 								{
@@ -135,6 +159,10 @@ namespace DynamicPowerShellApi
 								Console.WriteLine("Error '{0}'", error.ScriptStackTrace);
 								sb.Append(String.Format("Error {0}", error.ScriptStackTrace));
 							}
+						}
+						else
+						{							
+							sb.Append(sMessage);
 						}
 
 						Console.WriteLine("Creating a new PowershellReturn object");
@@ -156,7 +184,7 @@ namespace DynamicPowerShellApi
 					var psGood = new PowershellReturn
 					{
 						PowerShellReturnedValidData = true,
-						ActualPowerShellData = lastMessage == null ? string.Empty : lastMessage.ToString()
+						ActualPowerShellData = sMessage
 					};
 
 					DynamicPowershellApiEvents.Raise.PowerShellScriptFinalised(String.Format("The powershell returned the following {0}", psGood.ActualPowerShellData));
@@ -164,8 +192,9 @@ namespace DynamicPowerShellApi
 					return Task.FromResult(psGood);
 				}
 			}
-			catch
+			catch (Exception runnerException)
 			{
+				DynamicPowershellApiEvents.Raise.UnhandledException(runnerException.Message, runnerException.StackTrace);
 				throw;
 			}
 		}

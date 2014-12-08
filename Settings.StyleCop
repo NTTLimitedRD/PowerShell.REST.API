@@ -498,7 +498,7 @@
       </Rules>
       <AnalyzerSettings>
         <StringProperty Name="SP2002_Mode">NotEmpty</StringProperty>
-        <StringProperty Name="SP2101_Limit">150</StringProperty>
+        <StringProperty Name="SP2101_Limit">200</StringProperty>
       </AnalyzerSettings>
     </Analyzer>
   </Analyzers>
