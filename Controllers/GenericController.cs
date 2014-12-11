@@ -188,20 +188,16 @@ namespace DynamicPowerShellApi.Controllers
 
 				DynamicPowershellApiEvents.Raise.InvalidPowerShellOutput(poException.Message + " logged to " + logFile);
 
-				return new HttpResponseMessage
-				{
-					StatusCode = HttpStatusCode.InternalServerError,
-					Content = new JsonContent(
-						new JObject(
-							new ErrorResponse
-							{
-								ActivityId = activityId,
-								LogFile = logFile,
-								Message = poException.Message
-							}
-						)
-					)
-				};
+				var response = Request.CreateResponse<ErrorResponse>(HttpStatusCode.InternalServerError, 
+						new ErrorResponse
+						{
+							ActivityId = activityId,
+							LogFile = logFile,
+							Message = poException.Message
+						}
+						);				
+
+				return response;
 			}
 			catch (Exception ex)
 			{
@@ -227,20 +223,16 @@ namespace DynamicPowerShellApi.Controllers
 
 				DynamicPowershellApiEvents.Raise.UnhandledException(ex.Message + " logged to " + logFile, ex.StackTrace ?? String.Empty);
 
-				return new HttpResponseMessage
-				{
-					StatusCode = HttpStatusCode.InternalServerError,
-					Content = new JsonContent(
-						new JObject(
-							new ErrorResponse
-							{
-								ActivityId = activityId,
-								LogFile = logFile,
-								Message = ex.Message
-							} 
-						)
-					)
-				};
+				var response = Request.CreateResponse<ErrorResponse>(HttpStatusCode.InternalServerError, 
+						new ErrorResponse
+						{
+							ActivityId = activityId,
+							LogFile = logFile,
+							Message = ex.Message
+						}
+						);				
+
+				return response;
 			}			
 		}
 	}
