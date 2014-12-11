@@ -112,7 +112,7 @@ namespace DynamicPowerShellApi
 					DynamicPowershellApiEvents.Raise.PowerShellScriptFinalised("The powershell has completed - anlaysing results now");
 
 					// check the other output streams (for example, the error stream)
-					if (powerShellInstance.HadErrors)
+					if (powerShellInstance.HadErrors && powerShellInstance.Streams.Error.Count > 0)
 					{
 						var runtimeErrors = new List<PowerShellException>();
 
