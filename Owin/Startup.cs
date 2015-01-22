@@ -49,7 +49,7 @@ namespace DynamicPowerShellApi.Owin
 						IssuerSecurityTokenProviders =
 							new[]
 								{
-									new X509CertificateSecurityTokenProvider(cert.IssuerName.Name, cert)
+									new X509CertificateSecurityTokenProvider(cert.Subject, cert)
 								},
 						AuthenticationType = "Bearer",
 						AuthenticationMode = AuthenticationMode.Active
