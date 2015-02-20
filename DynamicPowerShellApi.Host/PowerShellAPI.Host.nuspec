@@ -10,8 +10,7 @@
     </metadata>
 	<files>
 		<file src="bin\Release\**\*.*" target="" />
-		<file src="bin\Release\AddAccountToLogonAsService.ps1" target="scripts" />
-		<file src ="..\ETW\**\*.*" target="ETW" />
+		<file src="bin\Release\AddAccountToLogonAsService.ps1" target="scripts" />		
 		<file src="PostDeploy.ps1" target="" />
 	</files>
 </package>
