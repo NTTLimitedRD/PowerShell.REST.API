@@ -235,6 +235,6 @@ If ($Publish)
 	}
 
     Get-ChildItem -Path $nuGetPackagesFolder -Filter '*.nupkg' | ForEach-Object {
-		.\Common\BuildSupport\NuGet\NuGet.exe Push "$($_.FullName)" -Source 'CSFMAperture' -ApiKey 'ThisIsNotUsedBecauseProGetUsesWindowsAuth' -ConfigFile '.\Common\BuildSupport\NuGet\NuGet.config' -NonInteractive
+		.\Common\BuildSupport\NuGet\NuGet.exe Push "$($_.FullName)" -Source 'CSFMJoule' -ApiKey 'ThisIsNotUsedBecauseProGetUsesWindowsAuth' -ConfigFile '.\Common\BuildSupport\NuGet\NuGet.config' -NonInteractive
 	}
 }
