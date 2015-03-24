@@ -63,7 +63,10 @@
 
 			Mock<IRunner> runnerMock = new Mock<IRunner>(MockBehavior.Strict);
 			runnerMock.Setup(
-				m => m.ExecuteAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IList<KeyValuePair<string, string>>>()))
+				m => m.ExecuteAsync(It.IsAny<string>(),
+					It.IsAny<string>(),
+					It.IsAny<string>(),
+					It.IsAny<IList<KeyValuePair<string, string>>>()))
 				.ReturnsAsync(returnValue.ToString());
 
 			var ioc = createContainer(cb => cb.RegisterInstance(runnerMock.Object));

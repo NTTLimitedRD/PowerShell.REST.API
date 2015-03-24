@@ -17,6 +17,9 @@
 		/// <param name="snapin">
 		/// The snap in.
 		/// </param>
+		/// <param name="module">
+		/// The module.
+		/// </param>
 		/// <param name="parametersList">
 		/// The parameters List.
 		/// </param>
@@ -26,6 +29,7 @@
 		Task<string> ExecuteAsync(
 			string filename,
 			string snapin,
+			string module,
 			IList<KeyValuePair<string, string>> parametersList);
 	}
 }

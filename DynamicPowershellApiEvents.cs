@@ -102,6 +102,24 @@
 		}
 
 		/// <summary>
+		/// Loading Module
+		/// </summary>
+		/// <param name="module">
+		/// Module name.
+		/// </param>
+		[
+			Event(
+				Events.LoadingModule,
+				Message = "Loading {0} Module.",
+				Level = EventLevel.Informational
+				)
+		]
+		public void LoadingModule(string module)
+		{
+			WriteEvent(Events.LoadingModule, module);
+		}
+
+		/// <summary>
 		/// The snap in exception log.
 		/// </summary>
 		/// <param name="errorMessage">
@@ -117,6 +135,24 @@
 		public void SnapinException(string errorMessage)
 		{
 			WriteEvent(Events.SnapinException, errorMessage);
+		}
+
+		/// <summary>
+		/// The module in exception log.
+		/// </summary>
+		/// <param name="errorMessage">
+		/// The error message from the <see cref="PSException"/> object.
+		/// </param>
+		[
+			Event(
+				Events.ModuleException,
+				Message = "Module exception: {0}",
+				Level = EventLevel.Error
+				)
+		]
+		public void ModuleException(string errorMessage)
+		{
+			WriteEvent(Events.ModuleException, errorMessage);
 		}
 
 		/// <summary>
@@ -166,6 +202,16 @@
 			///	Loading SnapIn
 			/// </summary>
 			public const int LoadingSnapIn = 1004;
+
+			/// <summary>
+			///	Loading Module
+			/// </summary>
+			public const int LoadingModule = 1005;
+
+			/// <summary>
+			///	Module exception occurred
+			/// </summary>
+			public const int ModuleException = 1006;
 		}
 	}
 }

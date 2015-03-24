@@ -84,10 +84,9 @@
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
-	<PropertyGroup>
+  <PropertyGroup>
     <EtwManifestForceAll>true</EtwManifestForceAll>
   </PropertyGroup>
-
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>Aperture.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -99,10 +98,10 @@
       <HintPath>packages\Autofac.WebApi2.3.4.0\lib\net45\Autofac.Integration.WebApi.dll</HintPath>
     </Reference>
     <Reference Include="DD.Cloud.Aperture.Platform.Core">
-      <HintPath>packages\Aperture.Platform.Core.1.3.211.10\lib\net451\DD.Cloud.Aperture.Platform.Core.dll</HintPath>
+      <HintPath>packages\Aperture.Platform.Core.1.3.256.0\lib\net451\DD.Cloud.Aperture.Platform.Core.dll</HintPath>
     </Reference>
     <Reference Include="DD.Cloud.Aperture.Platform.Diagnostics">
-      <HintPath>packages\Aperture.Platform.Diagnostics.1.3.211.10\lib\net451\DD.Cloud.Aperture.Platform.Diagnostics.dll</HintPath>
+      <HintPath>packages\Aperture.Platform.Diagnostics.1.3.256.0\lib\net451\DD.Cloud.Aperture.Platform.Diagnostics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Diagnostics.Tracing.EventSource, Version=1.0.26.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

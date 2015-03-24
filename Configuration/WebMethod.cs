@@ -44,6 +44,18 @@ namespace DynamicPowerShellApi.Configuration
 		}
 
 		/// <summary>
+		/// Gets the module.
+		/// </summary>
+		[ConfigurationProperty("Module")]
+		public string Module
+		{
+			get
+			{
+				return (string)this["Module"];
+			}
+		}
+
+		/// <summary>
 		/// Gets the parameters.
 		/// </summary>
 		[ConfigurationProperty("Parameters")]

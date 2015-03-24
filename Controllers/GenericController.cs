@@ -93,7 +93,7 @@ namespace DynamicPowerShellApi.Controllers
 
 			try
 			{
-				var output = await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, query.ToList());
+				var output = await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, method.Module, query.ToList());
 
 				var token = output.StartsWith("[") ? (JToken)JArray.Parse(output) : JObject.Parse(output);
 

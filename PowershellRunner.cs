@@ -24,6 +24,9 @@ namespace DynamicPowerShellApi
 		/// <param name="snapin">
 		/// The snap in.
 		/// </param>
+		/// <param name="module">
+		/// The module.
+		/// </param>
 		/// <param name="parametersList">
 		/// The parameters List.
 		/// </param>
@@ -31,7 +34,7 @@ namespace DynamicPowerShellApi
 		/// The <see cref="Task"/>.
 		/// null if error
 		/// </returns>
-		public Task<string> ExecuteAsync(string filename, string snapin, IList<KeyValuePair<string, string>> parametersList)
+		public Task<string> ExecuteAsync(string filename, string snapin, string module, IList<KeyValuePair<string, string>> parametersList)
 		{
 			if (string.IsNullOrWhiteSpace(filename))
 				throw new ArgumentException("Argument cannot be null, empty or composed of whitespaces only", "filename");
@@ -64,7 +67,18 @@ namespace DynamicPowerShellApi
 				}
 			}
 
-			using (PowerShell powerShellInstance = PowerShell.Create(InitialSessionState.Create()))
+			InitialSessionState initialSession = InitialSessionState.Create();
+
+			if (!String.IsNullOrWhiteSpace(module))
+			{
+				DynamicPowershellApiEvents
+					.Raise
+					.LoadingModule(module);
+
+				initialSession.ImportPSModule(new string[] { module });
+			}
+
+			using (PowerShell powerShellInstance = PowerShell.Create(initialSession))
 			{
 				powerShellInstance.RunspacePool = RunspacePoolWrapper.Pool;
 				if (powerShellInstance.Runspace == null)
