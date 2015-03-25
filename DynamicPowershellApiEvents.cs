@@ -151,6 +151,42 @@ namespace DynamicPowerShellApi
 		}
 
 		/// <summary>
+		/// Loading Module
+		/// </summary>
+		/// <param name="module">
+		/// Module name.
+		/// </param>
+		[
+			Event(
+				Events.LoadingModule,
+				Message = "Loading {0} Module.",
+				Level = EventLevel.Informational
+				)
+		]
+		public void LoadingModule(string module)
+		{
+			WriteEvent(Events.LoadingModule, module);
+		}
+
+		/// <summary>
+		/// The module in exception log.
+		/// </summary>
+		/// <param name="errorMessage">
+		/// The error message from the <see cref="PSException"/> object.
+		/// </param>
+		[
+			Event(
+				Events.ModuleException,
+				Message = "Module exception: {0}",
+				Level = EventLevel.Error
+				)
+		]
+		public void ModuleException(string errorMessage)
+		{
+			WriteEvent(Events.ModuleException, errorMessage);
+		}
+
+		/// <summary>
 		/// Invalid PowerShell Output
 		/// </summary>
 		/// <param name="errorMessage">The error message.</param>
@@ -293,6 +329,16 @@ namespace DynamicPowerShellApi
 			/// Invalid PowerShell output.
 			/// </summary>
 			public const int InvalidPowerShellOutput = 1011;
+
+			/// <summary>
+			///	Loading Module
+			/// </summary>
+			public const int LoadingModule = 1012;
+
+			/// <summary>
+			///	Module exception occurred
+			/// </summary>
+			public const int ModuleException = 1013;
 		}
 	}
 }
