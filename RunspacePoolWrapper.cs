@@ -3,12 +3,10 @@
 	using System;
 	using System.Management.Automation.Runspaces;
 
-	using DD.Cloud.Aperture.Platform.Core;
-
 	/// <summary>
 	/// The run space pool wrapper.
 	/// </summary>
-	public class RunspacePoolWrapper : DisposableObject
+	public class RunspacePoolWrapper : IDisposable
 	{
 		/// <summary>
 		/// The run space pool.
@@ -40,16 +38,11 @@
 		}
 
 		/// <summary>
-		/// The dispose.
+		/// Dispose of this runspace pool.
 		/// </summary>
-		/// <param name="disposing">
-		/// The disposing.
-		/// </param>
-		protected override void Dispose(bool disposing)
+		public void Dispose()
 		{
-			if (!disposing)
-				LazyRunspacePool.Value.Close();
-			base.Dispose(disposing);
+			LazyRunspacePool.Value.Close();
 		}
 	}
 }
