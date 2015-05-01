@@ -166,7 +166,7 @@ namespace DynamicPowerShellApi.Controllers
 				DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Started Executing the runner"));
 
 				Model.PowershellReturn output =
-					await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, query2.ToList());
+					await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, method.Module, query2.ToList());
 
 				JToken token = output.ActualPowerShellData.StartsWith("[")
 					? (JToken) JArray.Parse(output.ActualPowerShellData)

@@ -65,7 +65,7 @@ namespace DynamicPowerShellApi.Tests
 
 			Mock<IRunner> runnerMock = new Mock<IRunner>(MockBehavior.Strict);
 			runnerMock.Setup(
-				m => m.ExecuteAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IList<KeyValuePair<string, string>>>()))
+				m => m.ExecuteAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IList<KeyValuePair<string, string>>>()))
 				.ReturnsAsync(new PowershellReturn
 				{
 					PowerShellReturnedValidData = true,
