@@ -40,21 +40,25 @@ namespace DynamicPowerShellApi.Owin
 			config.DependencyResolver = new AutofacWebApiDependencyResolver(BuildContainer());
 			
 			config.EnsureInitialized();
-			X509Certificate2 cert = Certificate.ReadCertificate();
-			
-			appBuilder.UseJwtBearerAuthentication(
-				new JwtBearerAuthenticationOptions
-					{
-						AllowedAudiences = new[] { WebApiConfiguration.Instance.Authentication.Audience },
-						IssuerSecurityTokenProviders =
-							new[]
-								{
-									new X509CertificateSecurityTokenProvider(cert.Subject, cert)
-								},
-						AuthenticationType = "Bearer",
-						AuthenticationMode = AuthenticationMode.Active
-					});
-			appBuilder.UseWebApi(config);
+
+		    if (WebApiConfiguration.Instance.Authentication.Enabled)
+		    {
+		        X509Certificate2 cert = Certificate.ReadCertificate();
+
+		        appBuilder.UseJwtBearerAuthentication(
+		            new JwtBearerAuthenticationOptions
+		            {
+		                AllowedAudiences = new[] {WebApiConfiguration.Instance.Authentication.Audience},
+		                IssuerSecurityTokenProviders =
+		                    new[]
+		                    {
+		                        new X509CertificateSecurityTokenProvider(cert.Subject, cert)
+		                    },
+		                AuthenticationType = "Bearer",
+		                AuthenticationMode = AuthenticationMode.Active
+		            });
+		    }
+		    appBuilder.UseWebApi(config);
 			appBuilder.UseAutofacWebApi(config);
 		}
 
