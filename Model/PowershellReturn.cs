@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DynamicPowerShellApi.Model
+﻿namespace DynamicPowerShellApi.Model
 {
 	/// <summary>
 	/// This class holds the details for what is returned from power shell

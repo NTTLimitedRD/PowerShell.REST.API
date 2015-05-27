@@ -66,5 +66,17 @@ namespace DynamicPowerShellApi.Configuration
 				return (ParameterCollection)this["Parameters"];
 			}
 		}
+
+		/// <summary>	
+		/// 	Run this command as a job? I.e. respond with a Job ID. </summary>
+		/// <value>	true if as job, false if not. </value>
+		[ConfigurationProperty("AsJob", IsRequired = false, DefaultValue = false)]
+		public bool AsJob
+		{
+			get
+			{
+				return bool.Parse((string)this["AsJob"]);
+			}
+		}
 	}
 }

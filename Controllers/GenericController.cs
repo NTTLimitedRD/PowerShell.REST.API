@@ -113,6 +113,9 @@ namespace DynamicPowerShellApi.Controllers
 				throw new WebMethodNotFoundException(string.Format("Cannot find web method: {0}", methodName));
 			}
 			
+			// Is this scheduled as a job?
+			bool asJob = method.AsJob;
+
 			// Is this a POST method
 			IEnumerable<KeyValuePair<string, string>> query2;			
 			if (Request.Method == HttpMethod.Post)
@@ -165,8 +168,8 @@ namespace DynamicPowerShellApi.Controllers
 			{
 				DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Started Executing the runner"));
 
-				Model.PowershellReturn output =
-					await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, method.Module, query2.ToList());
+				PowershellReturn output =
+					await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, method.Module, query2.ToList(), asJob);
 
 				JToken token = output.ActualPowerShellData.StartsWith("[")
 					? (JToken) JArray.Parse(output.ActualPowerShellData)

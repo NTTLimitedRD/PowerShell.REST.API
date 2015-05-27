@@ -6,9 +6,8 @@
 	using System.Web.Http;
 	using System.Web.Http.Controllers;
 	using System.Web.Http.Dispatcher;
+	using Configuration;
 	using Controllers;
-
-	using DynamicPowerShellApi.Configuration;
 
 	/// <summary>
 	/// The generic controller selector.

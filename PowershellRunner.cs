@@ -19,27 +19,27 @@ namespace DynamicPowerShellApi
 	/// </summary>
 	public class PowershellRunner : IRunner
 	{
-		/// <summary>
-		/// The asynchronous execution method.
-		/// </summary>
-		/// <param name="filename">
-		/// The filename.
-		/// </param>
-		/// <param name="snapin">
-		/// The snap in.
-		/// </param>
-		/// <param name="module">
-		/// The module.
-		/// </param>
-		/// <param name="parametersList">
-		/// The parameters List.
-		/// </param>
-		/// <returns>
-		/// The <see cref="Task"/>.
-		/// </returns>
-		/// <exception cref="PSSnapInException">
-		/// </exception>
-		public Task<PowershellReturn> ExecuteAsync(string filename, string snapin, string module, IList<KeyValuePair<string, string>> parametersList)
+		/// <summary>	The asynchronous execution method. </summary>
+		/// <remarks>	Anthony, 5/27/2015. </remarks>
+		/// <exception cref="ArgumentException">		   	Thrown when one or more arguments have
+		/// 												unsupported or illegal values. </exception>
+		/// <exception cref="ArgumentNullException">	   	Thrown when one or more required arguments
+		/// 												are null. </exception>
+		/// <exception cref="PSSnapInException">		   	. </exception>
+		/// <exception cref="PowerShellExecutionException">	Thrown when a Power Shell Execution error
+		/// 												condition occurs. </exception>
+		/// <param name="filename">		 	The filename. </param>
+		/// <param name="snapin">		 	The snap in. </param>
+		/// <param name="module">		 	The module. </param>
+		/// <param name="parametersList">	The parameters List. </param>
+		/// <param name="asJob">		 	Run this command as a job. </param>
+		/// <returns>	The <see cref="Task"/>. </returns>
+		public Task<PowershellReturn> ExecuteAsync(
+			string filename, 
+			string snapin, 
+			string module, 
+			IList<KeyValuePair<string, string>> parametersList,
+			bool asJob)
 		{
 			if (string.IsNullOrWhiteSpace(filename))
 				throw new ArgumentException("Argument cannot be null, empty or composed of whitespaces only", "filename");
@@ -117,9 +117,33 @@ namespace DynamicPowerShellApi
 						Console.WriteLine("The parameters are {0}-{1}", item.Key, item.Value);
 					}
 
+					
+					if (asJob)
+					{
+						PSJobProxy jobProxy = powerShellInstance.AsJobProxy();
+						jobProxy.StartJob();
+						Guid jobId = jobProxy.InstanceId;
+
+						var jobResponse = new PowershellReturn
+						{
+							PowerShellReturnedValidData = true,
+							ActualPowerShellData = jobId.ToString()
+						};
+
+						DynamicPowershellApiEvents.Raise.PowerShellScriptFinalised(String.Format("A job has been scheduled {0}", jobId));
+
+						return Task.FromResult(jobResponse);
+					}
+
 					// invoke execution on the pipeline (collecting output)
 					Collection<PSObject> psOutput = powerShellInstance.Invoke();
-					string sMessage = psOutput.LastOrDefault() != null ? Regex.Replace(psOutput.LastOrDefault().ToString(), @"[^\u0000-\u007F]", string.Empty) : String.Empty;
+
+					string sMessage = psOutput == null
+						? String.Empty
+						: (
+							psOutput.LastOrDefault() != null
+								? Regex.Replace(psOutput.LastOrDefault().ToString(), @"[^\u0000-\u007F]", string.Empty)
+								: String.Empty);
 
 					DynamicPowershellApiEvents.Raise.PowerShellScriptFinalised("The powershell has completed - anlaysing results now");
 
@@ -169,13 +193,13 @@ namespace DynamicPowerShellApi
 									commandPath,
 									error.InvocationInfo.ScriptLineNumber);
 
-								runtimeErrors.Add(new PowerShellException()
-								{
-									StackTrace = scriptStack,
-									ErrorMessage = errorDetails,
-									LineNumber = error.InvocationInfo != null ? error.InvocationInfo.ScriptLineNumber : 0,
-									ScriptName = filename
-								});
+								runtimeErrors.Add(new PowerShellException
+									{
+										StackTrace = scriptStack,
+										ErrorMessage = errorDetails,
+										LineNumber = error.InvocationInfo != null ? error.InvocationInfo.ScriptLineNumber : 0,
+										ScriptName = filename
+									});
 
 								if (error.Exception != null)
 								{
@@ -192,7 +216,7 @@ namespace DynamicPowerShellApi
 							sb.Append(sMessage);
 						}
 
-						DynamicPowershellApiEvents.Raise.PowerShellScriptFinalised(String.Format("An error was rasied {0}", sb.ToString()));
+						DynamicPowershellApiEvents.Raise.PowerShellScriptFinalised(String.Format("An error was rasied {0}", sb));
 
 						throw new PowerShellExecutionException(sb.ToString())
 						{
@@ -220,7 +244,7 @@ namespace DynamicPowerShellApi
 				DynamicPowershellApiEvents.Raise.UnhandledException(runnerException.Message, runnerException.StackTrace);
 				throw new PowerShellExecutionException(runnerException.Message)
 				{
-					Exceptions = new List<PowerShellException>()
+					Exceptions = new List<PowerShellException>
 					{
 						new PowerShellException
 						{

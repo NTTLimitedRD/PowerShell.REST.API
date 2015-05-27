@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace DynamicPowerShellApi
+﻿namespace DynamicPowerShellApi
 {
 	using System;
 	using System.Management.Automation.Runspaces;
