@@ -126,6 +126,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthorizeIfEnabledAttribute.cs" />
     <Compile Include="Configuration\Authentication.cs" />
     <Compile Include="Configuration\WebApiCollection.cs" />
     <Compile Include="Configuration\Parameter.cs" />

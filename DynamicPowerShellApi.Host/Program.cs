@@ -1,5 +1,4 @@
-﻿using System.Runtime.ConstrainedExecution;
-using DynamicPowerShellApi.Exceptions;
+﻿using DynamicPowerShellApi.Exceptions;
 
 namespace DynamicPowerShellApi.Host
 {
@@ -11,7 +10,7 @@ namespace DynamicPowerShellApi.Host
 	using System.Runtime.Serialization.Formatters.Binary;
 	using System.ServiceProcess;
 
-	using DynamicPowerShellApi.Owin;
+	using Owin;
 
 	/// <summary>
 	/// Console host for Provisioning Worker
@@ -34,17 +33,10 @@ namespace DynamicPowerShellApi.Host
 
 			try
 			{
-				Action<ProgramOptions> showHelp = programOptions =>
-				{
-					Debug.WriteLine(programOptions.Help());
-					Console.Error.WriteLine(programOptions.Help());
-				};
-
 				ProgramOptions options;
 				if (!ProgramOptions.ParseCommandLine(commandLineArguments, out options))
 				{
 					Console.Error.WriteLine(options.Help());
-
 					return 5;
 				}
 
@@ -55,8 +47,6 @@ namespace DynamicPowerShellApi.Host
 					if (String.IsNullOrWhiteSpace(serviceUser) || String.IsNullOrWhiteSpace(servicePassword))
 					{
 						Console.WriteLine("Must supply a valid user-name and password.");
-						Debug.WriteLine(options.Help());
-
 						return 5;
 					}
 

@@ -78,7 +78,7 @@ namespace DynamicPowerShellApi.Controllers
 		/// </exception>
 		/// <exception cref="Exception">
 		/// </exception>
-		[Authorize]
+		[AuthorizeIfEnabled]
 		public async Task<HttpResponseMessage> ProcessRequestAsync()
 		{
 			DynamicPowershellApiEvents
