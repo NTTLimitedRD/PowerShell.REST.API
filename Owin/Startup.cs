@@ -2,25 +2,24 @@
 
 namespace DynamicPowerShellApi.Owin
 {
+	using Autofac;
+	using Autofac.Integration.WebApi;
+
+	using Configuration;
+	using Controllers;
+	using DynamicPowerShellApi;
+
+	using Microsoft.Owin.Hosting;
+	using Microsoft.Owin.Security;
+	using Microsoft.Owin.Security.Jwt;
+	using global::Owin;
+
+	using Security;
 	using System;
 	using System.Security.Cryptography.X509Certificates;
 	using System.Web.Http;
 	using System.Web.Http.Controllers;
 	using System.Web.Http.Dispatcher;
-
-	using Autofac;
-	using Autofac.Integration.WebApi;
-
-	using DynamicPowerShellApi;
-	using DynamicPowerShellApi.Configuration;
-	using DynamicPowerShellApi.Controllers;
-	using DynamicPowerShellApi.Security;
-
-	using Microsoft.Owin.Hosting;
-	using Microsoft.Owin.Security;
-	using Microsoft.Owin.Security.Jwt;
-
-	using global::Owin;
 
 	/// <summary>
 	/// The startup.
@@ -48,7 +47,10 @@ namespace DynamicPowerShellApi.Owin
 		        appBuilder.UseJwtBearerAuthentication(
 		            new JwtBearerAuthenticationOptions
 		            {
-		                AllowedAudiences = new[] {WebApiConfiguration.Instance.Authentication.Audience},
+		                AllowedAudiences = new[]
+		                {
+			                WebApiConfiguration.Instance.Authentication.Audience
+		                },
 		                IssuerSecurityTokenProviders =
 		                    new[]
 		                    {

@@ -139,6 +139,7 @@ namespace DynamicPowerShellApi.Host
 				Console.ReadLine();
 				return -1;
 			}
+			Console.WriteLine("To get server status, make a request to : {0}", Constants.StatusUrlPath);
 			Console.ReadLine();
 
 			// Raise a stop service

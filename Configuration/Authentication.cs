@@ -59,7 +59,7 @@
         /// <summary>
         /// Enable authentication.
         /// </summary>
-        [ConfigurationProperty("Enabled", IsRequired = false,DefaultValue = true)]
+        [ConfigurationProperty("Enabled", IsRequired = false, DefaultValue = true)]
         public bool Enabled
         {
             get

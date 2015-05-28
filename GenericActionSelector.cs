@@ -27,7 +27,7 @@
 			get
 			{
 				return new ReflectedHttpActionDescriptor(
-					new HttpControllerDescriptor(this._currentConfiguration, "generic", typeof(GenericController)),
+					new HttpControllerDescriptor(_currentConfiguration, "generic", typeof(GenericController)),
 					typeof(GenericController).GetMethod("ProcessRequestAsync"));
 			}
 		}
@@ -38,7 +38,7 @@
 		/// <param name="configuration">The configuration of the http channel.</param>
 		public GenericActionSelector(HttpConfiguration configuration)
 		{
-			this._currentConfiguration = configuration;
+			_currentConfiguration = configuration;
 		}
 
 		/// <summary>
@@ -50,10 +50,15 @@
 		/// </returns>
 		public HttpActionDescriptor SelectAction(HttpControllerContext controllerContext)
 		{
-			Console.WriteLine("Selecting action for {0}", controllerContext.ControllerDescriptor.ControllerName);
+			Console.WriteLine("Selecting action for {0}, {1}", controllerContext.ControllerDescriptor.ControllerName, controllerContext.Request.RequestUri.AbsolutePath);
+
+			if (controllerContext.Request.RequestUri.AbsolutePath == Constants.StatusUrlPath)
+				return new ReflectedHttpActionDescriptor(
+					new HttpControllerDescriptor(_currentConfiguration, "generic", typeof(GenericController)),
+					typeof(GenericController).GetMethod("Status"));
 
 			// Always give the same action
-			return this.ActionDescriptor;
+			return ActionDescriptor;
 		}
 
 		/// <summary>
@@ -71,7 +76,7 @@
 
 			Console.WriteLine("Getting action mapping for {0}", controllerDescriptor.ControllerName);
 
-			descriptors.Add(this.ActionDescriptor);
+			descriptors.Add(ActionDescriptor);
 
 			ILookup<string, HttpActionDescriptor> result = descriptors.ToLookup(
 				p => "generic",

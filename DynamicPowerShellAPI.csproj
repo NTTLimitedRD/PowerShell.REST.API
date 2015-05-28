@@ -134,6 +134,7 @@
     <Compile Include="Configuration\WebApi.cs" />
     <Compile Include="Configuration\WebMethod.cs" />
     <Compile Include="Configuration\WebMethodCollection.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Controllers\GenericController.cs" />
     <Compile Include="DynamicPowershellApiEvents.cs" />
     <Compile Include="Exceptions\CertificateNotFoundException.cs" />
