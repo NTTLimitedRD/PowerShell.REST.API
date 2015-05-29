@@ -1,6 +1,5 @@
 ﻿namespace DynamicPowerShellApi
 {
-	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Web.Http;
@@ -50,8 +49,6 @@
 		/// </returns>
 		public HttpActionDescriptor SelectAction(HttpControllerContext controllerContext)
 		{
-			Console.WriteLine("Selecting action for {0}, {1}", controllerContext.ControllerDescriptor.ControllerName, controllerContext.Request.RequestUri.AbsolutePath);
-
 			if (controllerContext.Request.RequestUri.AbsolutePath == Constants.StatusUrlPath)
 				return new ReflectedHttpActionDescriptor(
 					new HttpControllerDescriptor(_currentConfiguration, "generic", typeof(GenericController)),
@@ -73,8 +70,6 @@
 			// Exercised only by ASP.NET Web API’s API explorer feature
 			
 			List<HttpActionDescriptor> descriptors = new List<HttpActionDescriptor>();
-
-			Console.WriteLine("Getting action mapping for {0}", controllerDescriptor.ControllerName);
 
 			descriptors.Add(ActionDescriptor);
 

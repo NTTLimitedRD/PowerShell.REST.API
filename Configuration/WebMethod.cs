@@ -75,7 +75,7 @@ namespace DynamicPowerShellApi.Configuration
 		{
 			get
 			{
-				return bool.Parse((string)this["AsJob"]);
+				return (bool)this["AsJob"];
 			}
 		}
 	}

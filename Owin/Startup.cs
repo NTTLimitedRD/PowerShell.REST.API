@@ -1,4 +1,5 @@
 ﻿using DynamicPowerShellApi.Logging;
+using Owin.Stats;
 
 namespace DynamicPowerShellApi.Owin
 {
@@ -36,10 +37,16 @@ namespace DynamicPowerShellApi.Owin
 			// Configure Web API for self-host. 
 			HttpConfiguration config = CreateConfiguration();
 
-			config.DependencyResolver = new AutofacWebApiDependencyResolver(BuildContainer());
-			
+			// Construct the Autofac container
+			IContainer container = BuildContainer();
+
+			// Use autofac's dependency resolver, not the OWIN one
+			config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
+
+			// Wait for the initialization to complete (setup the socket)
 			config.EnsureInitialized();
 
+			// If the config file specifies authentication, load up the certificates and use the JWT middleware.
 		    if (WebApiConfiguration.Instance.Authentication.Enabled)
 		    {
 		        X509Certificate2 cert = Certificate.ReadCertificate();
@@ -60,6 +67,8 @@ namespace DynamicPowerShellApi.Owin
 		                AuthenticationMode = AuthenticationMode.Active
 		            });
 		    }
+
+			appBuilder.UseAutofacMiddleware(container);
 		    appBuilder.UseWebApi(config);
 			appBuilder.UseAutofacWebApi(config);
 		}
@@ -75,6 +84,8 @@ namespace DynamicPowerShellApi.Owin
 			ContainerBuilder builder = new ContainerBuilder();
 
 			builder.RegisterApiControllers(typeof(GenericController).Assembly);
+
+			builder.RegisterType<StatsProviderComponent>().SingleInstance();
 
 			builder.RegisterType<PowershellRunner>()
 				.As<IRunner>()

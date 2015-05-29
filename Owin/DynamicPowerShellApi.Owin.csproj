@@ -123,6 +123,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Owin.Stats\Owin.Stats.csproj">
+      <Project>{C2606181-F285-4345-8F39-6A55A319ACDB}</Project>
+      <Name>Owin.Stats</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DynamicPowerShellApi.csproj">
       <Project>{0e96dee8-3bd5-4396-8c84-52aaf60eb270}</Project>
       <Name>DynamicPowerShellApi</Name>

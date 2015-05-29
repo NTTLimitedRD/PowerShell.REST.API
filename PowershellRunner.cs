@@ -67,7 +67,7 @@ namespace DynamicPowerShellApi
 			{
 				DynamicPowershellApiEvents
 					.Raise
-					.ExecutingPowerShellScript(filename, "Unknown");		        
+					.ExecutingPowerShellScript(filename, "Unknown");
 			}
 			
 			try
@@ -80,8 +80,7 @@ namespace DynamicPowerShellApi
 				if (!String.IsNullOrWhiteSpace(snapin))
 				{
 					PSSnapInException snapInException;
-					PSSnapInInfo info = rsConfig.AddPSSnapIn(snapin, out snapInException);
-					Console.WriteLine("DEBUG: Loading snapin {0}", snapin);
+					rsConfig.AddPSSnapIn(snapin, out snapInException);
 					if (snapInException != null)
 					{
 						DynamicPowershellApiEvents
@@ -114,7 +113,6 @@ namespace DynamicPowerShellApi
 					foreach (var item in parametersList)
 					{
 						powerShellInstance.AddParameter(item.Key, item.Value);
-						Console.WriteLine("The parameters are {0}-{1}", item.Key, item.Value);
 					}
 
 					
@@ -142,7 +140,7 @@ namespace DynamicPowerShellApi
 						? String.Empty
 						: (
 							psOutput.LastOrDefault() != null
-								? Regex.Replace(psOutput.LastOrDefault().ToString(), @"[^\u0000-\u007F]", string.Empty)
+							? Regex.Replace(psOutput.LastOrDefault().ToString(), @"[^\u0000-\u007F]", string.Empty)
 								: String.Empty);
 
 					DynamicPowershellApiEvents.Raise.PowerShellScriptFinalised("The powershell has completed - anlaysing results now");
@@ -157,7 +155,6 @@ namespace DynamicPowerShellApi
 
 						// error records were written to the error stream.
 						// do something with the items found.
-						Console.WriteLine("PowerShell script raised errors:");
 						sb.Append("PowerShell script raised errors:" + Environment.NewLine);
 						sb.Append(String.Format("{0}", sMessage));
 
@@ -203,11 +200,9 @@ namespace DynamicPowerShellApi
 
 								if (error.Exception != null)
 								{
-									Console.WriteLine("PowerShell Exception {0} : {1}", error.Exception.Message, error.Exception.StackTrace);
 									sb.Append(String.Format("PowerShell Exception {0} : {1}", error.Exception.Message, error.Exception.StackTrace));
 								}
 
-								Console.WriteLine("Error '{0}'", error.ScriptStackTrace);
 								sb.Append(String.Format("Error {0}", error.ScriptStackTrace));
 							}
 						}

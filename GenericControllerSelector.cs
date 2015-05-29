@@ -58,7 +58,6 @@
 			if (request == null)
 				throw new ArgumentNullException("request", "Argument cannot be null.");
 
-			Console.WriteLine("Selecting controller for request {0}", request.RequestUri);
 			DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Received Request {0}", request.RequestUri));
 			
 			return GenericDescriptor;
@@ -75,11 +74,8 @@
 			// Exercised only by ASP.NET Web API’s API explorer feature
 			var dic = new Dictionary<string, HttpControllerDescriptor>();
 
-			Console.WriteLine("Registering API endpoints.");
-
 			foreach (WebApi api in WebApiConfiguration.Instance.Apis)
 			{
-				Console.WriteLine("Registering API {0}.", api.Name);
 				dic.Add(api.Name, new HttpControllerDescriptor(_currentConfiguration, api.Name, typeof(GenericController)));
 			}
 
