@@ -67,5 +67,15 @@
 				return (Authentication)this["Authentication"];
 			}
 		}
+
+		/// <summary>	Gets the jobs configuration object. </summary>
+		[ConfigurationProperty("Jobs", IsRequired = true)]
+		public JobStoreConfiguration Jobs
+		{
+			get
+			{
+				return (JobStoreConfiguration)this["Jobs"];
+			}
+		}
 	}
 }

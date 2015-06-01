@@ -1,2 +1,6 @@
-param ($message)
-start-job -scriptblock { $args[0].GetType().FullName } -argumentlist { echo $message }
+param ( 
+	$message
+	)
+
+Sleep -s 10
+Get-Item -Path . | Select-Object name | ConvertTo-Json -Compress

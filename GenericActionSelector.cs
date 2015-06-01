@@ -49,10 +49,21 @@
 		/// </returns>
 		public HttpActionDescriptor SelectAction(HttpControllerContext controllerContext)
 		{
+			// if the user is requesting the server status..
 			if (controllerContext.Request.RequestUri.AbsolutePath == Constants.StatusUrlPath)
 				return new ReflectedHttpActionDescriptor(
 					new HttpControllerDescriptor(_currentConfiguration, "generic", typeof(GenericController)),
 					typeof(GenericController).GetMethod("Status"));
+
+			if (controllerContext.Request.RequestUri.AbsolutePath == Constants.JobListPath)
+				return new ReflectedHttpActionDescriptor(
+					new HttpControllerDescriptor(_currentConfiguration, "generic", typeof(GenericController)),
+					typeof(GenericController).GetMethod("AllJobStatus"));
+
+			if (controllerContext.Request.RequestUri.AbsolutePath == Constants.GetJobPath)
+				return new ReflectedHttpActionDescriptor(
+					new HttpControllerDescriptor(_currentConfiguration, "generic", typeof(GenericController)),
+					typeof(GenericController).GetMethod("GetJob"));
 
 			// Always give the same action
 			return ActionDescriptor;
@@ -69,9 +80,7 @@
 		{
 			// Exercised only by ASP.NET Web API’s API explorer feature
 			
-			List<HttpActionDescriptor> descriptors = new List<HttpActionDescriptor>();
-
-			descriptors.Add(ActionDescriptor);
+			List<HttpActionDescriptor> descriptors = new List<HttpActionDescriptor> { ActionDescriptor };
 
 			ILookup<string, HttpActionDescriptor> result = descriptors.ToLookup(
 				p => "generic",

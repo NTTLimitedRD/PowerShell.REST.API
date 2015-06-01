@@ -96,7 +96,7 @@ namespace DynamicPowerShellApi
 					DynamicPowershellApiEvents
 						.Raise
 						.LoadingModule(module);
-					initialSession.ImportPSModule(new string[] { module });
+					initialSession.ImportPSModule(new[] { module });
 				}
 
 				using (PowerShell powerShellInstance = PowerShell.Create(initialSession))
@@ -111,27 +111,7 @@ namespace DynamicPowerShellApi
 					powerShellInstance.AddScript(scriptContent);
 
 					foreach (var item in parametersList)
-					{
 						powerShellInstance.AddParameter(item.Key, item.Value);
-					}
-
-					
-					if (asJob)
-					{
-						PSJobProxy jobProxy = powerShellInstance.AsJobProxy();
-						jobProxy.StartJob();
-						Guid jobId = jobProxy.InstanceId;
-
-						var jobResponse = new PowershellReturn
-						{
-							PowerShellReturnedValidData = true,
-							ActualPowerShellData = jobId.ToString()
-						};
-
-						DynamicPowershellApiEvents.Raise.PowerShellScriptFinalised(String.Format("A job has been scheduled {0}", jobId));
-
-						return Task.FromResult(jobResponse);
-					}
 
 					// invoke execution on the pipeline (collecting output)
 					Collection<PSObject> psOutput = powerShellInstance.Invoke();
@@ -251,6 +231,39 @@ namespace DynamicPowerShellApi
 					},
 					LogTime = DateTime.Now
 				};
+			}
+		}
+
+		/// <summary>	Gets a job. </summary>
+		/// <remarks>	Anthony, 5/29/2015. </remarks>
+		/// <param name="jobId">	Identifier for the job. </param>
+		/// <returns>	The job. </returns>
+		public Task<PowershellReturn> GetJob(Guid jobId)
+		{
+			RunspaceConfiguration rsConfig = RunspaceConfiguration.Create();
+
+			InitialSessionState initialSession = InitialSessionState.Create();
+
+			using (PowerShell powerShellInstance = PowerShell.Create(initialSession))
+			{
+				powerShellInstance.RunspacePool = RunspacePoolWrapper.Pool;
+				if (powerShellInstance.Runspace == null)
+				{
+					powerShellInstance.Runspace = RunspaceFactory.CreateRunspace(rsConfig);
+					powerShellInstance.Runspace.Open();
+				}
+
+				ICollection<PSJobProxy> jobProxyCollection = PSJobProxy.Create(powerShellInstance.Runspace);
+
+				var proxy = jobProxyCollection.First();
+
+				return Task.FromResult(
+					new PowershellReturn
+					{
+						PowerShellReturnedValidData = true,
+						ActualPowerShellData = proxy.Output.LastOrDefault().ToString()
+					}
+					);
 			}
 		}
 	}

@@ -1,10 +1,16 @@
-﻿using DynamicPowerShellApi.Logging;
+﻿using System.IO;
+using System.Management.Automation;
+using System.Web.Http.Results;
+using DynamicPowerShellApi.Jobs;
+using DynamicPowerShellApi.Logging;
 using DynamicPowerShellApi.Model;
+using Newtonsoft.Json;
 
 namespace DynamicPowerShellApi.Controllers
 {
 	using Configuration;
 	using Exceptions;
+	using Microsoft.Owin;
 	using Newtonsoft.Json.Linq;
 	using System;
 	using System.Collections.Generic;
@@ -29,6 +35,9 @@ namespace DynamicPowerShellApi.Controllers
 		/// </summary>
 		private readonly ICrashLogger _crashLogger;
 
+		/// <summary>	The job list provider. </summary>
+		private readonly IJobListProvider _jobListProvider;
+
 		/// <summary>
 		/// Initialises a new instance of the <see cref="GenericController"/> class.
 		/// </summary>
@@ -36,19 +45,25 @@ namespace DynamicPowerShellApi.Controllers
 		{
 		}
 
-		/// <summary>
-		/// Initialises a new instance of the <see cref="GenericController"/> class.
-		/// </summary>
-		/// <param name="powershellRunner">
-		/// The PowerShell runner.
-		/// </param>
-		/// <param name="crashLogger">
-		///		An implementation of a crash logger.
-		/// </param>
-		public GenericController(IRunner powershellRunner, ICrashLogger crashLogger)
+		/// <summary>	Initialises a new instance of the <see cref="GenericController"/> class. </summary>
+		/// <remarks>	Anthony, 6/1/2015. </remarks>
+		/// <exception cref="ArgumentNullException">	Thrown when one or more required arguments are
+		/// 											null. </exception>
+		/// <param name="powershellRunner">	The PowerShell runner. </param>
+		/// <param name="crashLogger">	   	An implementation of a crash logger. </param>
+		/// <param name="jobListProvider"> 	The job list provider. </param>
+		public GenericController(IRunner powershellRunner, ICrashLogger crashLogger, IJobListProvider jobListProvider)
 		{
+			if (jobListProvider == null)
+				throw new ArgumentNullException("jobListProvider");
+			if (crashLogger == null)
+				throw new ArgumentNullException("crashLogger");
+			if (powershellRunner == null)
+				throw new ArgumentNullException("powershellRunner");
+
 			_powershellRunner = powershellRunner;
 			_crashLogger = crashLogger;
+			_jobListProvider = jobListProvider;
 		}
 
 		/// <summary>
@@ -59,7 +74,40 @@ namespace DynamicPowerShellApi.Controllers
 		[AllowAnonymous]
 		public HttpResponseMessage Status()
 		{
-			return new HttpResponseMessage { Content = new StringContent("OK") };
+			return new HttpResponseMessage {Content = new StringContent("OK")};
+		}
+
+		[Route("jobs")]
+		public dynamic AllJobStatus()
+		{
+			dynamic jobs = new
+			{
+				running = _jobListProvider.GetRunningJobs(),
+				completed = _jobListProvider.GetCompletedJobs()
+			};
+
+			return jobs;
+		}
+
+		/// <summary>	Gets a job. </summary>
+		/// <remarks>	Anthony, 6/1/2015. </remarks>
+		/// <exception cref="ArgumentOutOfRangeException">	Thrown when one or more arguments are outside
+		/// 												the required range. </exception>
+		/// <param name="jobId">	Identifier for the job. </param>
+		/// <returns>	The job. </returns>
+		[Route("job")]
+		public dynamic GetJob(string jobId)
+		{
+			Guid jobGuid;
+			if (!Guid.TryParse(jobId, out jobGuid))
+				throw new ArgumentOutOfRangeException("jobId is not a valid GUID");
+
+			using (TextReader reader = new StreamReader(
+				Path.Combine(WebApiConfiguration.Instance.Jobs.JobStorePath, jobId + ".json")))
+			{
+				dynamic d = JObject.Parse(reader.ReadToEnd());
+				return d;
+			}
 		}
 
 		/// <summary>
@@ -79,7 +127,7 @@ namespace DynamicPowerShellApi.Controllers
 		/// <exception cref="Exception">
 		/// </exception>
 		[AuthorizeIfEnabled]
-		public async Task<HttpResponseMessage> ProcessRequestAsync()
+		public async Task<HttpResponseMessage> ProcessRequestAsync(HttpRequestMessage request = null)
 		{
 			DynamicPowershellApiEvents
 				.Raise
@@ -168,13 +216,114 @@ namespace DynamicPowerShellApi.Controllers
 			{
 				DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Started Executing the runner"));
 
-				PowershellReturn output =
-					await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, method.Module, query2.ToList(), asJob);
+				if (!asJob)
+				{
+					PowershellReturn output =
+						await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, method.Module, query2.ToList(), asJob);
 
-				JToken token = output.ActualPowerShellData.StartsWith("[")
-					? (JToken) JArray.Parse(output.ActualPowerShellData)
-					: JObject.Parse(output.ActualPowerShellData);
-				return new HttpResponseMessage { Content = new JsonContent(token) };
+					JToken token = output.ActualPowerShellData.StartsWith("[")
+						? (JToken) JArray.Parse(output.ActualPowerShellData)
+						: JObject.Parse(output.ActualPowerShellData);
+
+					return new HttpResponseMessage
+					{
+						Content = new JsonContent(token)
+					};
+				}
+				else // run as job.
+				{
+					Guid jobId = Guid.NewGuid();
+					string requestedHost = String.Empty;
+
+					if (Request.Properties.ContainsKey("MS_OwinContext"))
+						requestedHost = ((OwinContext)Request.Properties["MS_OwinContext"]).Request.RemoteIpAddress;
+
+					_jobListProvider.AddRequestedJob(jobId, requestedHost );
+
+					// Go off and run this job please sir.
+					var task = Task<bool>.Factory.StartNew(
+						() =>
+						{
+							try
+							{
+								Task<PowershellReturn> goTask =  
+								_powershellRunner.ExecuteAsync(
+										method.PowerShellPath,
+										method.Snapin,
+										method.Module,
+										query2.ToList(),
+										true);
+
+								goTask.Wait();
+								var output = goTask.Result;
+
+								JToken token = output.ActualPowerShellData.StartsWith("[")
+								? (JToken)JArray.Parse(output.ActualPowerShellData)
+								: JObject.Parse(output.ActualPowerShellData);
+
+								_jobListProvider.CompleteJob(jobId, output.PowerShellReturnedValidData, String.Empty);
+
+								string outputPath = Path.Combine(WebApiConfiguration.Instance.Jobs.JobStorePath, jobId + ".json");
+
+								using (TextWriter writer = File.CreateText(outputPath))
+								{
+									JsonSerializer serializer = new JsonSerializer
+									{
+										Formatting = Formatting.Indented // Make it readable for Ops sake!
+									};
+									serializer.Serialize(writer, token);
+								}
+
+								return true;
+							}
+							catch (PowerShellExecutionException poException)
+							{
+								CrashLogEntry entry = new CrashLogEntry
+								{
+									Exceptions = poException.Exceptions,
+									LogTime = poException.LogTime,
+									RequestAddress = requestedHost, 
+									RequestMethod = methodName,
+									RequestUrl = Request.RequestUri.ToString()
+								};
+								entry.SetActivityId(activityId);
+								string logFile = _crashLogger.SaveLog(entry);
+
+								DynamicPowershellApiEvents.Raise.InvalidPowerShellOutput(poException.Message + " logged to " + logFile);
+
+								ErrorResponse response =
+										new ErrorResponse
+										{
+											ActivityId = activityId,
+											LogFile = logFile,
+											Message = poException.Message
+										};
+
+								JToken token = new JObject(response);
+
+								_jobListProvider.CompleteJob(jobId, false, String.Empty);
+
+								string outputPath = Path.Combine(WebApiConfiguration.Instance.Jobs.JobStorePath, jobId + ".json");
+
+								using (TextWriter writer = File.CreateText(outputPath))
+								{
+									JsonSerializer serializer = new JsonSerializer
+									{
+										Formatting = Formatting.Indented // Make it readable for Ops sake!
+									};
+									serializer.Serialize(writer, token);
+								}
+								return true;
+							}
+						}
+					);
+					
+					// return the Job ID.
+					return new HttpResponseMessage
+					{
+						Content = new JsonContent(new JValue(jobId))
+					};
+				}
 			}
 			catch (PowerShellExecutionException poException)
 			{
@@ -191,7 +340,7 @@ namespace DynamicPowerShellApi.Controllers
 
 				DynamicPowershellApiEvents.Raise.InvalidPowerShellOutput(poException.Message + " logged to " + logFile);
 
-				var response = Request.CreateResponse<ErrorResponse>(HttpStatusCode.InternalServerError, 
+				HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.InternalServerError, 
 						new ErrorResponse
 						{
 							ActivityId = activityId,
@@ -206,7 +355,7 @@ namespace DynamicPowerShellApi.Controllers
 			{
 				CrashLogEntry entry = new CrashLogEntry
 				{
-					Exceptions = new List<PowerShellException>()
+					Exceptions = new List<PowerShellException>
 					{
 						new PowerShellException
 						{
@@ -226,7 +375,7 @@ namespace DynamicPowerShellApi.Controllers
 
 				DynamicPowershellApiEvents.Raise.UnhandledException(ex.Message + " logged to " + logFile, ex.StackTrace ?? String.Empty);
 
-				var response = Request.CreateResponse<ErrorResponse>(HttpStatusCode.InternalServerError, 
+				HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.InternalServerError, 
 						new ErrorResponse
 						{
 							ActivityId = activityId,
