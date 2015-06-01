@@ -102,12 +102,21 @@ namespace DynamicPowerShellApi.Controllers
 			if (!Guid.TryParse(jobId, out jobGuid))
 				throw new ArgumentOutOfRangeException("jobId is not a valid GUID");
 
-			using (TextReader reader = new StreamReader(
-				Path.Combine(WebApiConfiguration.Instance.Jobs.JobStorePath, jobId + ".json")))
+			string jobPath = Path.Combine(WebApiConfiguration.Instance.Jobs.JobStorePath, jobId + ".json");
+
+			if (File.Exists(jobPath))
+				using (TextReader reader = new StreamReader(jobPath))
+				{
+					dynamic d = JObject.Parse(reader.ReadToEnd());
+					return d;
+				}
+			
+			return new ErrorResponse
 			{
-				dynamic d = JObject.Parse(reader.ReadToEnd());
-				return d;
-			}
+				ActivityId = Guid.NewGuid(),
+				LogFile = String.Empty,
+				Message = "Cannot find record of job completion"
+			};
 		}
 
 		/// <summary>
