@@ -1,0 +1,416 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DD.Cloud.Aperture.Build.Tasks</name>
+    </assembly>
+    <members>
+        <member name="T:DD.Cloud.Aperture.Build.Tasks.GetFullPaths">
+            <summary>
+            	MSBuild task that converts the supplied items to items with full paths using <see cref="T:System.IO.Path"/>.<see cref="M:System.IO.Path.GetFullPath(System.String)"/>.
+            </summary>
+            <remarks>
+            	This works better than the <see cref="T:Microsoft.Build.Tasks.ConvertToAbsolutePath"/> task, which won't put a drive letter where one often needs to be.
+            </remarks>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.GetFullPaths.#ctor">
+            <summary>
+            	Create a new <see cref="T:DD.Cloud.Aperture.Build.Tasks.GetFullPaths"/> task.
+            </summary>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.GetFullPaths.Execute">
+            <summary>
+            	Execute the task.
+            </summary>
+            <returns>
+            	<c>true</c>, if the task executed successfully; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:DD.Cloud.Aperture.Build.Tasks.GetFullPaths.Inputs">
+            <summary>
+            	The items to convert.
+            </summary>
+        </member>
+        <member name="P:DD.Cloud.Aperture.Build.Tasks.GetFullPaths.Outputs">
+            <summary>
+            	The converted items.
+            </summary>
+        </member>
+        <member name="T:DD.Cloud.Aperture.Build.Tasks.Git.GitRepositoryInformation">
+            <summary>
+            	MSBuild task to get information about local Git repository.
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.Git.GitRepositoryInformation._workingCopyDirectory">
+            <summary>
+            	The working copy directory.
+            </summary>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.Git.GitRepositoryInformation.#ctor">
+            <summary>
+            	Create a new <see cref="T:DD.Cloud.Aperture.Build.Tasks.Git.GitRepositoryInformation"/> task.
+            </summary>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.Git.GitRepositoryInformation.Execute">
+            <summary>
+            	Execute the task.
+            </summary>
+            <returns>
+            	<c>true</c>, if the task executed successfully; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:DD.Cloud.Aperture.Build.Tasks.Git.GitRepositoryInformation.WorkingCopy">
+            <summary>
+            	The full path of the directory containing the working copy.
+            </summary>
+        </member>
+        <member name="P:DD.Cloud.Aperture.Build.Tasks.Git.GitRepositoryInformation.HeadCommitId">
+            <summary>
+            	Receives the Id (SHA1 hash) of the repository's HEAD commit.
+            </summary>
+        </member>
+        <member name="T:DD.Cloud.Aperture.Build.Tasks.Git.GitSubmitChanges">
+            <summary>
+            	MSBuild task to stage, commit, and push one or more changed files to a remote repository.
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.Git.GitSubmitChanges._workingCopyDirectory">
+            <summary>
+            	The working copy directory.
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.Git.GitSubmitChanges._items">
+            <summary>
+            	The items to submit (if they have changed).
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.Git.GitSubmitChanges._pushRemoteName">
+            <summary>
+            	The name of the remote to which changes should be pushed.
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.Git.GitSubmitChanges._authorName">
+            <summary>
+            	The author name to use when committing changes.
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.Git.GitSubmitChanges._authorEmail">
+            <summary>
+            	The author email address to use when committing changes.
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.Git.GitSubmitChanges._commitMessage">
+            <summary>
+            	The message to use when committing.
+            </summary>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.Git.GitSubmitChanges.#ctor">
+            <summary>
+            	Create a new Git change-submission task.
+            </summary>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.Git.GitSubmitChanges.Execute">
+            <summary>
+            	Execute the task.
+            </summary>
+            <returns>
+            	<c>true</c>, if the task executed successfully; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:DD.Cloud.Aperture.Build.Tasks.Git.GitSubmitChanges.WorkingCopy">
+            <summary>
+            	The full path of the directory containing the working copy.
+            </summary>
+        </member>
+        <member name="P:DD.Cloud.Aperture.Build.Tasks.Git.GitSubmitChanges.Items">
+            <summary>
+            	The items to submit (if they have changed).
+            </summary>
+        </member>
+        <member name="P:DD.Cloud.Aperture.Build.Tasks.Git.GitSubmitChanges.PushRemoteName">
+            <summary>
+            	The remote to which changes should be pushed.
+            </summary>
+        </member>
+        <member name="P:DD.Cloud.Aperture.Build.Tasks.Git.GitSubmitChanges.AuthorName">
+            <summary>
+            	The author name to use when committing changes.
+            </summary>
+        </member>
+        <member name="P:DD.Cloud.Aperture.Build.Tasks.Git.GitSubmitChanges.AuthorEmail">
+            <summary>
+            	The author email address to use when committing changes.
+            </summary>
+        </member>
+        <member name="P:DD.Cloud.Aperture.Build.Tasks.Git.GitSubmitChanges.CommitMessage">
+            <summary>
+            	The message to use when committing.
+            </summary>
+        </member>
+        <member name="T:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.BuildImagePackage">
+            <summary>
+            	MSBuild task that builds an image package.
+            </summary>
+            <remarks>
+            	Image packages are an aggregation of several packages to be built into a single unified package (which is then deployed as a monolithic image).
+            </remarks>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.BuildImagePackage.#ctor">
+            <summary>
+            	Create a new <see cref="T:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.BuildImagePackage"/> task.
+            </summary>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.BuildImagePackage.Execute">
+            <summary>
+            	Build the image package.
+            </summary>
+            <returns>
+            	<c>true</c>, if the task executed successfully; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.BuildImagePackage.BaseImage">
+            <summary>
+            	The package representing the base image for the package.
+            </summary>
+        </member>
+        <member name="P:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.BuildImagePackage.ImageDefininitionScript">
+            <summary>
+            	The .nuspec file that describes the image and its dependencies.
+            </summary>
+        </member>
+        <member name="T:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.NuGetTraceSource">
+            <summary>
+            	A <see cref="T:System.Diagnostics.TraceSource"/> implementation that acts as a sink for NuGet logging and diagnostic information.
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.NuGetTraceSource.TraceSourceName">
+            <summary>
+            	The name of the trace source, as specified in configuration.
+            </summary>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.NuGetTraceSource.#ctor(System.Diagnostics.SourceLevels)">
+            <summary>
+            	Create a new <see cref="T:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.NuGetTraceSource"/>.
+            </summary>
+            <param name="defaultLevel">
+            	A bitwise combination of the enumeration values that specifies the default source level at which to trace.
+            </param>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.NuGetTraceSource.NuGet#ILogger#Log(NuGet.MessageLevel,System.String,System.Object[])">
+            <summary>
+            	Log a message from NuGet.
+            </summary>
+            <param name="messageLevel">
+            	A <see cref="T:NuGet.MessageLevel"/> value identifying the severity level of the message.
+            </param>
+            <param name="messageOrFormat">
+            	The message or message format specifier.
+            </param>
+            <param name="formatArguments">
+            	Optional format arguments.
+            </param>
+            <exception cref="T:System.ArgumentNullException">
+            	<paramref name="messageOrFormat"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.NuGetTraceSource.NuGet#IFileConflictResolver#ResolveFileConflict(System.String)">
+            <summary>
+            	Determine how a file conflict should be resolved.
+            </summary>
+            <param name="message">
+            	The message used to prompt for a resolution.
+            </param>
+            <returns>
+            	<see cref="F:NuGet.FileConflictResolution.Ignore"/>.
+            </returns>
+            <remarks>
+            	TODO: Consider whether we want to lift this up as an event.
+            </remarks>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.NuGetTraceSource.GetPropertyValue(System.String)">
+            <summary>
+            	Get the value of the specified property.
+            </summary>
+            <param name="propertyName">
+            	The property name.
+            </param>
+            <returns>
+            	The property value (<c>dynamic</c>).
+            </returns>
+        </member>
+        <member name="T:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler">
+            <summary>
+            	Compiles an image package from a manifest that references one or more source packages.
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.SourcePackages">
+            <summary>
+            	Source packages for the merge, keyed by their package Id.
+            </summary>
+            <remarks>
+            	Source packages are sorted by package Id (case-insensitive) to ensure repeatable ordering of packages during merge.
+            </remarks>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.DescriptionBuilder">
+            <summary>
+            	A <see cref="T:System.Text.StringBuilder"/> used to generate the description for the merged package.
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.PackageRepositoryFactory">
+            <summary>
+            	Our factory for <see cref="T:NuGet.IPackageRepository">package repositories</see> based on <see cref="T:System.Uri"/>.
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler._referencedPackageSource">
+            <summary>
+            	The file-system path or URL of the source from which referenced packages are to be retrieved.
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler._intermediateFolder">
+            <summary>
+            	The folder for storing intermediate files during packaging.
+            </summary>
+            <remarks>
+            	This is where the primary package and its dependencies are extracted to.
+            </remarks>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler._outputFolder">
+            <summary>
+            	The folder to which the compiled package will be written.
+            </summary>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.#ctor(System.String,System.String,System.String)">
+            <summary>
+            	Create a new package compiler.
+            </summary>
+            <param name="intermediateFolder">
+            	The intermediate folder.
+            </param>
+            <param name="outputFolder">
+            	The output folder.
+            </param>
+            <param name="referencedPackageSource">
+            	The file-system path or URL of the source from which packages are to be downloaded.
+            </param>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.Compile(System.String)">
+            <summary>
+            	Compile a package from the specified package definition file.
+            </summary>
+            <param name="packageDefinitionFile">
+            	The full path to the package definition (.nuspec) file that describes the package to build.
+            </param>
+            <returns>
+            	A <see cref="T:System.IO.FileInfo"/> representing the compiled file.
+            </returns>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.Compile(System.IO.FileInfo)">
+            <summary>
+            	Compile a package from the specified package definition file.
+            </summary>
+            <param name="packageDefinitionFile">
+            	The package definition (.nuspec) file that describes the package to build.
+            </param>
+            <returns>
+            	A <see cref="T:System.IO.FileInfo"/> representing the compiled file.
+            </returns>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.StagePackageFiles(NuGet.IPackageRepository)">
+            <summary>
+            	Stage package files for compilation into the new package.
+            </summary>
+            <param name="fromPackageRepository">
+            	The repository from which locally-cached packages will be retrieved.
+            </param>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.BuildPackage(NuGet.ManifestMetadata,System.IO.FileInfo)">
+            <summary>
+            	Build the package from the staged output files.
+            </summary>
+            <param name="packageDefinitionMetadata">
+            	The package definition metadata.
+            </param>
+            <param name="outputPackageFile">
+            	The output package file to generate.
+            </param>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.CreatePackageManager">
+            <summary>
+            	Create a package manager targeting the specified package source.
+            </summary>
+            <returns>
+            	The package manager.
+            </returns>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.Initialize">
+            <summary>
+            	Initialise state for compilation.
+            </summary>
+        </member>
+        <member name="T:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.Diagnostics">
+            <summary>
+            	Compiler diagnostics facilities.
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.Diagnostics.Compiler">
+            <summary>
+            	Our <see cref="T:System.Diagnostics.TraceSource"/> for detailed NuGet diagnostic information.
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.Diagnostics.NuGet">
+            <summary>
+            	Our <see cref="T:System.Diagnostics.TraceSource"/> for detailed NuGet diagnostic information.
+            </summary>
+        </member>
+        <member name="T:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.Diagnostics.CompilerEventId">
+            <summary>
+            	Event Ids used by compiler diagnostics.
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.Diagnostics.CompilerEventId.StagingSourcePackage">
+            <summary>
+            	Staging a source package's files.
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.Diagnostics.CompilerEventId.StagingSourceFile">
+            <summary>
+            	Staging a file from a source package file.
+            </summary>
+        </member>
+        <member name="F:DD.Cloud.Aperture.Build.Tasks.ImagePackaging.PackageCompiler.Diagnostics.CompilerEventId.NotStagingFileDueToConflict">
+            <summary>
+            	Skipping staging of file from a source package because it conflicts with a file laid down by a previous package.
+            </summary>
+        </member>
+        <member name="T:DD.Cloud.Aperture.Build.Tasks.Wix.GetReferencedFilesFromWixObj">
+            <summary>
+            	A build task that retrieves all referenced files from one or more WiX Object (.wixobj) files.
+            </summary>
+            <remarks>
+            	Essentially, this task can be used to determine exactly what files a given build of the setup includes.
+            </remarks>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.Wix.GetReferencedFilesFromWixObj.#ctor">
+            <summary>
+            	Create a new <see cref="T:DD.Cloud.Aperture.Build.Tasks.Wix.GetReferencedFilesFromWixObj"/> task.
+            </summary>
+        </member>
+        <member name="M:DD.Cloud.Aperture.Build.Tasks.Wix.GetReferencedFilesFromWixObj.Execute">
+            <summary>
+            	Execute the task.
+            </summary>
+            <returns>
+            	<c>true</c>, if the task executed successfully; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:DD.Cloud.Aperture.Build.Tasks.Wix.GetReferencedFilesFromWixObj.WixObjectFiles">
+            <summary>
+            	The WiX Object (.wixobj) files to scan for file references.
+            </summary>
+        </member>
+        <member name="P:DD.Cloud.Aperture.Build.Tasks.Wix.GetReferencedFilesFromWixObj.ReferencedFiles">
+            <summary>
+            	The files referenced by the WiX Object files.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" InitialTargets="_CheckRequiredItemGroups">
+	<UsingTask AssemblyFile="DD.Cloud.Aperture.Build.Tasks.dll" TaskName="GetReferencedFilesFromWixObj" />
+	<UsingTask AssemblyFile="DD.Cloud.Aperture.Build.Tasks.dll" TaskName="GetFullPaths" />
+
+	<!-- Ensure consumer has defined required item group(s) in main project file -->
+	<Target Name="_CheckRequiredItemGroups">
+		<Error
+			Text="No 'StageDir' items are not defined."
+			Condition=" '@(StageDir)' == '' "
+		/>
+
+		<Error
+			Text="Staging directory '%(StageDir.Identity)' does not exist."
+			Condition=" !Exists('%(StageDir.Identity)') "
+		/>
+	</Target>
+
+	<Target Name="ScanWixObjects" AfterTargets="CoreBuild" DependsOnTargets="Compile">
+		<!-- Start with the list of all staged files -->
+		<ItemGroup>
+			<_StagedFile Include="%(StageDir.Identity)\**\*.*" />
+		</ItemGroup>
+
+		<!-- Subtract, from that, the list of all files referenced by the script -->
+		<GetReferencedFilesFromWixObj WixObjectFiles="@(CompileObjOutput)">
+			<Output
+				TaskParameter="ReferencedFiles"
+				ItemName="_WixReferencedFile"
+			/>
+		</GetReferencedFilesFromWixObj>
+		<ItemGroup>
+			<_StagedFile Remove="@(_WixReferencedFile)" />
+		</ItemGroup>
+
+		<!-- Finally, subtract all explicitly-excluded files -->
+		<ItemGroup>
+			<_ExcludeFromStagedFileCheck Include="$(ExcludeFromStagedFileCheck)" />
+		</ItemGroup>
+		<Message
+			Importance="normal"
+			Text="The following item has been explicitly excluded from the staged-file check: '%(_ExcludeFromStagedFileCheck.FullPath)'."
+		/>
+		<ItemGroup>
+			<_StagedFile Remove="@(_ExcludeFromStagedFileCheck)" />
+		</ItemGroup>
+
+		<!-- Anything left is not excluded and in the staging area but not in the script -->
+		<Error
+			Text="File '%(_StagedFile.Identity)' is present in the staging area, but not referenced by the script."
+			Condition=" '@(_StagedFile)' != '' "
+			ContinueOnError="true"
+		/>
+	</Target>
+</Project>

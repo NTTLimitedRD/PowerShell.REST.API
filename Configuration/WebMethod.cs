@@ -32,6 +32,18 @@ namespace DynamicPowerShellApi.Configuration
 		}
 
 		/// <summary>
+		/// Gets the module.
+		/// </summary>
+		[ConfigurationProperty("Module")]
+		public string Module
+		{
+			get
+			{
+				return (string)this["Module"];
+			}
+		}
+
+		/// <summary>
 		/// Gets the snap in.
 		/// </summary>
 		[ConfigurationProperty("Snapin")]
@@ -52,6 +64,18 @@ namespace DynamicPowerShellApi.Configuration
 			get
 			{
 				return (ParameterCollection)this["Parameters"];
+			}
+		}
+
+		/// <summary>	
+		/// 	Run this command as a job? I.e. respond with a Job ID. </summary>
+		/// <value>	true if as job, false if not. </value>
+		[ConfigurationProperty("AsJob", IsRequired = false, DefaultValue = false)]
+		public bool AsJob
+		{
+			get
+			{
+				return (bool)this["AsJob"];
 			}
 		}
 	}

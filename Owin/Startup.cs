@@ -1,24 +1,27 @@
-﻿namespace DynamicPowerShellApi.Owin
+﻿using DynamicPowerShellApi.Jobs;
+using DynamicPowerShellApi.Logging;
+using Owin.Stats;
+
+namespace DynamicPowerShellApi.Owin
 {
+	using Autofac;
+	using Autofac.Integration.WebApi;
+
+	using Configuration;
+	using Controllers;
+	using DynamicPowerShellApi;
+
+	using Microsoft.Owin.Hosting;
+	using Microsoft.Owin.Security;
+	using Microsoft.Owin.Security.Jwt;
+	using global::Owin;
+
+	using Security;
 	using System;
 	using System.Security.Cryptography.X509Certificates;
 	using System.Web.Http;
 	using System.Web.Http.Controllers;
 	using System.Web.Http.Dispatcher;
-
-	using Autofac;
-	using Autofac.Integration.WebApi;
-
-	using DynamicPowerShellApi;
-	using DynamicPowerShellApi.Configuration;
-	using DynamicPowerShellApi.Controllers;
-	using DynamicPowerShellApi.Security;
-
-	using Microsoft.Owin.Hosting;
-	using Microsoft.Owin.Security;
-	using Microsoft.Owin.Security.Jwt;
-
-	using global::Owin;
 
 	/// <summary>
 	/// The startup.
@@ -35,24 +38,39 @@
 			// Configure Web API for self-host. 
 			HttpConfiguration config = CreateConfiguration();
 
-			config.DependencyResolver = new AutofacWebApiDependencyResolver(BuildContainer());
-			
+			// Construct the Autofac container
+			IContainer container = BuildContainer();
+
+			// Use autofac's dependency resolver, not the OWIN one
+			config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
+
+			// Wait for the initialization to complete (setup the socket)
 			config.EnsureInitialized();
-			X509Certificate2 cert = Certificate.ReadCertificate();
-			
-			appBuilder.UseJwtBearerAuthentication(
-				new JwtBearerAuthenticationOptions
-					{
-						AllowedAudiences = new[] { WebApiConfiguration.Instance.Authentication.Audience },
-						IssuerSecurityTokenProviders =
-							new[]
-								{
-									new X509CertificateSecurityTokenProvider(cert.IssuerName.Name, cert)
-								},
-						AuthenticationType = "Bearer",
-						AuthenticationMode = AuthenticationMode.Active
-					});
-			appBuilder.UseWebApi(config);
+
+			// If the config file specifies authentication, load up the certificates and use the JWT middleware.
+		    if (WebApiConfiguration.Instance.Authentication.Enabled)
+		    {
+		        X509Certificate2 cert = Certificate.ReadCertificate();
+
+		        appBuilder.UseJwtBearerAuthentication(
+		            new JwtBearerAuthenticationOptions
+		            {
+		                AllowedAudiences = new[]
+		                {
+			                WebApiConfiguration.Instance.Authentication.Audience
+		                },
+		                IssuerSecurityTokenProviders =
+		                    new[]
+		                    {
+		                        new X509CertificateSecurityTokenProvider(cert.Subject, cert)
+		                    },
+		                AuthenticationType = "Bearer",
+		                AuthenticationMode = AuthenticationMode.Active
+		            });
+		    }
+
+			appBuilder.UseAutofacMiddleware(container);
+		    appBuilder.UseWebApi(config);
 			appBuilder.UseAutofacWebApi(config);
 		}
 
@@ -68,9 +86,20 @@
 
 			builder.RegisterApiControllers(typeof(GenericController).Assembly);
 
+			builder.RegisterType<StatsProviderComponent>().SingleInstance();
+
+			builder
+				.RegisterType<JobListProvider>()
+				.SingleInstance()
+				.As<IJobListProvider>();
+
 			builder.RegisterType<PowershellRunner>()
 				.As<IRunner>()
 				.InstancePerDependency();
+
+			builder.RegisterType<CrashLogger>()
+				.As<ICrashLogger>()
+				.SingleInstance();
 
 			return builder.Build();
 		}

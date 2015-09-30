@@ -1,17 +1,16 @@
-﻿namespace DynamicPowerShellApi.Tests
+﻿using DynamicPowerShellApi.Model;
+
+namespace DynamicPowerShellApi.Tests
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Net.Http;
-	using System.Threading;
-	using System.Web.Http;
-	using System.Web.Http.Controllers;
 
 	using Autofac;
 
-	using DynamicPowerShellApi.Configuration;
-	using DynamicPowerShellApi.Controllers;
-	using DynamicPowerShellApi.Exceptions;
+	using Configuration;
+	using Controllers;
+	using Exceptions;
 
 	using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -63,8 +62,12 @@
 
 			Mock<IRunner> runnerMock = new Mock<IRunner>(MockBehavior.Strict);
 			runnerMock.Setup(
-				m => m.ExecuteAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IList<KeyValuePair<string, string>>>()))
-				.ReturnsAsync(returnValue.ToString());
+				m => m.ExecuteAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IList<KeyValuePair<string, string>>>(), It.IsAny<bool>()))
+				.ReturnsAsync(new PowershellReturn
+				{
+					PowerShellReturnedValidData = true,
+					ActualPowerShellData = returnValue.ToString()
+				});
 
 			var ioc = createContainer(cb => cb.RegisterInstance(runnerMock.Object));
 

@@ -1,5 +1,4 @@
-﻿using System.Runtime.ConstrainedExecution;
-using DynamicPowerShellApi.Exceptions;
+﻿using DynamicPowerShellApi.Exceptions;
 
 namespace DynamicPowerShellApi.Host
 {
@@ -11,7 +10,7 @@ namespace DynamicPowerShellApi.Host
 	using System.Runtime.Serialization.Formatters.Binary;
 	using System.ServiceProcess;
 
-	using DynamicPowerShellApi.Owin;
+	using Owin;
 
 	/// <summary>
 	/// Console host for Provisioning Worker
@@ -34,17 +33,10 @@ namespace DynamicPowerShellApi.Host
 
 			try
 			{
-				Action<ProgramOptions> showHelp = programOptions =>
-				{
-					Debug.WriteLine(programOptions.Help());
-					Console.Error.WriteLine(programOptions.Help());
-				};
-
 				ProgramOptions options;
 				if (!ProgramOptions.ParseCommandLine(commandLineArguments, out options))
 				{
 					Console.Error.WriteLine(options.Help());
-
 					return 5;
 				}
 
@@ -55,8 +47,6 @@ namespace DynamicPowerShellApi.Host
 					if (String.IsNullOrWhiteSpace(serviceUser) || String.IsNullOrWhiteSpace(servicePassword))
 					{
 						Console.WriteLine("Must supply a valid user-name and password.");
-						Debug.WriteLine(options.Help());
-
 						return 5;
 					}
 
@@ -109,6 +99,9 @@ namespace DynamicPowerShellApi.Host
 		{
 			try
 			{
+				// Raise a start service
+				DynamicPowershellApiEvents.Raise.StartUp();
+
 				Startup.Start();
 			}
 			catch (CertificateNotFoundException certMissing)
@@ -121,7 +114,7 @@ namespace DynamicPowerShellApi.Host
 			catch (System.Reflection.TargetInvocationException invocationException)
 			{
 				if (invocationException.InnerException != null &&
-				    invocationException.InnerException.GetType() == typeof(CertificateNotFoundException))
+					invocationException.InnerException.GetType() == typeof(CertificateNotFoundException))
 				{
 					Console.WriteLine("Cannot find certificate to authenticate requests - " + invocationException.InnerException.Message);
 					DynamicPowershellApiEvents.Raise.ConfigurationError("Cannot find certificate to authenticate requests - " + invocationException.InnerException.Message);
@@ -136,7 +129,12 @@ namespace DynamicPowerShellApi.Host
 				Console.ReadLine();
 				return -1;
 			}
+			Console.WriteLine("To get server status, make a request to : {0}", Constants.StatusUrlPath);
 			Console.ReadLine();
+
+			// Raise a stop service
+			DynamicPowershellApiEvents.Raise.Stop();
+
 			return 0;
 		}
 
@@ -150,6 +148,9 @@ namespace DynamicPowerShellApi.Host
 		{
 			try
 			{
+				// Raise a start service
+				DynamicPowershellApiEvents.Raise.StartUp();
+
 				ServiceBase.Run(new DynamicPowerShellApiService());
 			}
 			catch (CertificateNotFoundException certMissing)
@@ -180,10 +181,10 @@ namespace DynamicPowerShellApi.Host
 			return 0;
 		}
 
-		///  <summary>
+		/// <summary>
 		/// 		Register the Windows service.
-		///  </summary>
-		///  <param name="serviceUser">Service user</param>
+		/// </summary>
+		/// <param name="serviceUser">Service user</param>
 		/// <param name="servicePassword">Service password</param>
 		static void InstallService(string serviceUser, string servicePassword)
 		{

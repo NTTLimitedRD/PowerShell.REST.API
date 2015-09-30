@@ -55,5 +55,17 @@
 				return (string)this["Audience"];
 			}
 		}
+
+        /// <summary>
+        /// Enable authentication.
+        /// </summary>
+        [ConfigurationProperty("Enabled", IsRequired = false, DefaultValue = true)]
+        public bool Enabled
+        {
+            get
+            {
+                return (bool)this["Enabled"];
+            }
+        }
 	}
 }

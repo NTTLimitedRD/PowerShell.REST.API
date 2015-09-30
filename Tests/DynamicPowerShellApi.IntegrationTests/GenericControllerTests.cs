@@ -49,7 +49,7 @@
 		/// </summary>
 		[TestCategory("Integration Tests")]
 		[TestMethod]
-		public void ProcessRequest_RunTestScript()
+		public void ProcessRequestRunTestScript()
 		{
 			using (WebApp.Start<Startup>("http://localhost:9000"))
 			{

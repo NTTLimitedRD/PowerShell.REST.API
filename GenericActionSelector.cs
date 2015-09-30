@@ -1,6 +1,5 @@
 ﻿namespace DynamicPowerShellApi
 {
-	using System;
 	using System.Collections.Generic;
 	using System.Linq;
 	using System.Web.Http;
@@ -27,7 +26,7 @@
 			get
 			{
 				return new ReflectedHttpActionDescriptor(
-					new HttpControllerDescriptor(this._currentConfiguration, "generic", typeof(GenericController)),
+					new HttpControllerDescriptor(_currentConfiguration, "generic", typeof(GenericController)),
 					typeof(GenericController).GetMethod("ProcessRequestAsync"));
 			}
 		}
@@ -38,7 +37,7 @@
 		/// <param name="configuration">The configuration of the http channel.</param>
 		public GenericActionSelector(HttpConfiguration configuration)
 		{
-			this._currentConfiguration = configuration;
+			_currentConfiguration = configuration;
 		}
 
 		/// <summary>
@@ -50,10 +49,24 @@
 		/// </returns>
 		public HttpActionDescriptor SelectAction(HttpControllerContext controllerContext)
 		{
-			Console.WriteLine("Selecting action for {0}", controllerContext.ControllerDescriptor.ControllerName);
+			// if the user is requesting the server status..
+			if (controllerContext.Request.RequestUri.AbsolutePath == Constants.StatusUrlPath)
+				return new ReflectedHttpActionDescriptor(
+					new HttpControllerDescriptor(_currentConfiguration, "generic", typeof(GenericController)),
+					typeof(GenericController).GetMethod("Status"));
+
+			if (controllerContext.Request.RequestUri.AbsolutePath == Constants.JobListPath)
+				return new ReflectedHttpActionDescriptor(
+					new HttpControllerDescriptor(_currentConfiguration, "generic", typeof(GenericController)),
+					typeof(GenericController).GetMethod("AllJobStatus"));
+
+			if (controllerContext.Request.RequestUri.AbsolutePath == Constants.GetJobPath)
+				return new ReflectedHttpActionDescriptor(
+					new HttpControllerDescriptor(_currentConfiguration, "generic", typeof(GenericController)),
+					typeof(GenericController).GetMethod("GetJob"));
 
 			// Always give the same action
-			return this.ActionDescriptor;
+			return ActionDescriptor;
 		}
 
 		/// <summary>
@@ -67,11 +80,7 @@
 		{
 			// Exercised only by ASP.NET Web API’s API explorer feature
 			
-			List<HttpActionDescriptor> descriptors = new List<HttpActionDescriptor>();
-
-			Console.WriteLine("Getting action mapping for {0}", controllerDescriptor.ControllerName);
-
-			descriptors.Add(this.ActionDescriptor);
+			List<HttpActionDescriptor> descriptors = new List<HttpActionDescriptor> { ActionDescriptor };
 
 			ILookup<string, HttpActionDescriptor> result = descriptors.ToLookup(
 				p => "generic",

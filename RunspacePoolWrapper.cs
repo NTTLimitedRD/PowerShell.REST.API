@@ -38,7 +38,7 @@
 		}
 
 		/// <summary>
-		/// Dispose of this runspace pool.
+		/// Dispose of the run space.
 		/// </summary>
 		public void Dispose()
 		{
