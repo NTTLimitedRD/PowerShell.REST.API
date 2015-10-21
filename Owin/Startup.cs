@@ -1,6 +1,5 @@
 ﻿using DynamicPowerShellApi.Jobs;
 using DynamicPowerShellApi.Logging;
-using Owin.Stats;
 
 namespace DynamicPowerShellApi.Owin
 {
@@ -85,8 +84,6 @@ namespace DynamicPowerShellApi.Owin
 			ContainerBuilder builder = new ContainerBuilder();
 
 			builder.RegisterApiControllers(typeof(GenericController).Assembly);
-
-			builder.RegisterType<StatsProviderComponent>().SingleInstance();
 
 			builder
 				.RegisterType<JobListProvider>()

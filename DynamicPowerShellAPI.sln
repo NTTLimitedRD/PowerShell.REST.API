@@ -25,8 +25,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPowerShellApi.Host",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicPowerShellApi.Owin", "Owin\DynamicPowerShellApi.Owin.csproj", "{891AFC4A-9927-467E-A7DB-BD373F782142}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Owin.Stats", "..\Owin.Stats\Owin.Stats.csproj", "{C2606181-F285-4345-8F39-6A55A319ACDB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,10 +51,6 @@ Global
 		{891AFC4A-9927-467E-A7DB-BD373F782142}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{891AFC4A-9927-467E-A7DB-BD373F782142}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{891AFC4A-9927-467E-A7DB-BD373F782142}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C2606181-F285-4345-8F39-6A55A319ACDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2606181-F285-4345-8F39-6A55A319ACDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2606181-F285-4345-8F39-6A55A319ACDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C2606181-F285-4345-8F39-6A55A319ACDB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
