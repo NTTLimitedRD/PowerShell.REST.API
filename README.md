@@ -3,6 +3,11 @@
 
 Turn any PowerShell script into a HTTP REST API!
 
+### Builds
+
+* __Tested Build__ https://github.com/DimensionDataCBUSydney/PowerShell.REST.API/releases
+* __Latest Build__ https://ci.appveyor.com/project/tonybaloney/powershell-rest-api/build/artifacts
+
 ## Overview
 
 This project is a HTTP service written in C#.NET using the Microsoft OWIN libraries.
@@ -14,7 +19,7 @@ The web service configures the web methods as boot based on the configuration of
 It hosts a PowerShell runspace pool to load, run and check PowerShell scripts, capturing errors and stack traces to the logs
 and parsing complex PowerShell response objects back into JSON.
 
-It also supports async jobs to be run as seperate threads, with the job results to be stored on disk.
+It also supports async jobs to be run as separate threads, with the job results to be stored on disk.
 
 ## How it works
 
@@ -89,13 +94,17 @@ First, add a WebApi element with the name __foo__
 
 Then for your script, bar.ps1, by convention each script should pipe the return object through [ConvertTo-Json](https://technet.microsoft.com/en-us/library/hh849922.aspx), this is because PowerShell's dynamic objects can contain circular references and cause JSON convertors to crash.
 
-Take your named parameters, for example `$message`
+Take your named parameters, for example `$message` and do something with them, in this example
+
 
 ```powershell
-params(
-    [string] $message
-)
-$message | ConvertTo-Json -Compress
+param ( 
+	$message
+	)
+# go backwards
+$back_message = -join $message[-1..-$message.Length]
+
+@{ "message" = $back_message } | ConvertTo-Json -Compress
 ```
 
 Now, add the method to the configuration file by adding an `WebMethod` Element
@@ -119,6 +128,26 @@ Then, add a `Parameter` Element to the `Parameters` collection for each paramete
             </WebMethods>
 ```
 
+### Testing your script
+
+Start up the API host from a console
+
+```cmd
+.\DynamicPowerShellApi.Host.exe --console
+```
+
+![Console](http://s28.postimg.org/4h2oquti5/ps_host_test1.png)
+
+Using a tool like Postman you can check your script output
+
+![Example response](http://s13.postimg.org/wab4f3cbr/ps_host_response.png)
+
+returns
+```json
+{
+  "message": "zab"
+}
+```
 
 ## Authentication
 
@@ -152,4 +181,43 @@ In DynamicPowerShellApi.Owin/Startup.cs replace the existing auth configuration 
         });
        
     }
+```
+
+## Error Handling
+
+By default, any terminal errors in your powershell script will cause the HTTP response code to be HTTP500,
+
+You will get the following response from the API
+
+```json
+{
+  "Message": "Error reading JObject from JsonReader. Current JsonReader item is not an object: String. Path '', line 1, position 5.",
+  "Success": false,
+  "LogFile": "bar130899475577107290.xml",
+  "ActivityId": "bc346446-9964-4ff2-ad45-d7b13efe84b5"
+}
+```
+
+Also, it will log the error in a `Logs` folder underneath the host directory.
+
+### Example error log
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<CrashLogEntry xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ActivityId>bc346446-9964-4ff2-ad45-d7b13efe84b5</ActivityId>
+  <LogTime>2015-10-22T11:32:37.710729+11:00</LogTime>
+  <RequestUrl>http://localhost:9000/api/foo/bar?message=baz</RequestUrl>
+  <RequestAddress />
+  <Exceptions>
+    <PowerShellException>
+      <ScriptName>GenericController.cs</ScriptName>
+      <ErrorMessage>Error reading JObject from JsonReader. Current JsonReader item is not an object: String. Path '', line 1, position 5.</ErrorMessage>
+      <LineNumber>0</LineNumber>
+      <StackTrace>   at Newtonsoft.Json.Linq.JObject.Load(JsonReader reader)
+   at Newtonsoft.Json.Linq.JObject.Parse(String json)
+   at DynamicPowerShellApi.Controllers.GenericController.&lt;ProcessRequestAsync&gt;d__1f.MoveNext()</StackTrace>
+    </PowerShellException>
+  </Exceptions>
+  <RequestMethod>bar</RequestMethod>
+</CrashLogEntry>
 ```
