@@ -1,7 +1,7 @@
 <instrumentationManifest xmlns="http://schemas.microsoft.com/win/2004/08/events">
  <instrumentation xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:win="http://manifests.microsoft.com/win/2004/08/windows/events">
   <events xmlns="http://schemas.microsoft.com/win/2004/08/events">
-<provider name="DDCloud-DynamicPowershellApi" guid="{2fb1cbdf-1b23-571e-203c-a2c9ded93a89}" resourceFileName="C:\Users\anthony\Documents\PowerShell.REST.API\ETW\DynamicPowerShellApi.DDCloud-DynamicPowershellApi.etwManifest.dll" messageFileName="C:\Users\anthony\Documents\PowerShell.REST.API\ETW\DynamicPowerShellApi.DDCloud-DynamicPowershellApi.etwManifest.dll" symbol="DDCloudDynamicPowershellApi">
+<provider name="DDCloud-DynamicPowershellApi" guid="{2fb1cbdf-1b23-571e-203c-a2c9ded93a89}" resourceFileName="C:\Users\jasbro\Source\repos\forked\PowerShell.REST.API\ETW\DynamicPowerShellApi.DDCloud-DynamicPowershellApi.etwManifest.dll" messageFileName="C:\Users\jasbro\Source\repos\forked\PowerShell.REST.API\ETW\DynamicPowerShellApi.DDCloud-DynamicPowershellApi.etwManifest.dll" symbol="DDCloudDynamicPowershellApi">
  <tasks>
   <task name="ModuleException" message="$(string.task_ModuleException)" value="64521"/>
   <task name="LoadingModule" message="$(string.task_LoadingModule)" value="64522"/>
@@ -84,7 +84,7 @@
 </events>
 </instrumentation>
 <localization>
- <resources culture="en-US">
+ <resources culture="en-GB">
   <stringTable>
    <string id="event_ConfigurationError" value="Cannot start service from configuration error-  %1"/>
    <string id="event_ExecutingPowerShellScript" value="Started execution of powershell script file %1 - %2"/>
