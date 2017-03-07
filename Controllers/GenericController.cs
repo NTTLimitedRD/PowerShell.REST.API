@@ -183,15 +183,31 @@ namespace DynamicPowerShellApi.Controllers
 				{
 					// Work out the parameters from JSON
 					var queryStrings = new Dictionary<string, string>();
-					JToken token = documentContents.StartsWith("[") ? (JToken)JArray.Parse(documentContents) : JObject.Parse(documentContents);
-											
-					foreach (var details in token)
-					{
-						var name = details.First.First.ToString();
-						var value = details.Last.First.ToString();
-						
-						queryStrings.Add(name, value);
-					}
+
+                    if (documentContents.StartsWith("[")) // it's an array. Let's use a horrible nested loop                        
+                    {
+                        JArray tokenArray = JArray.Parse(documentContents);
+                        foreach (JObject details in tokenArray)
+                        {                            
+                            foreach (var detail in details)
+                            { 
+                                var name = detail.Key;
+                                var value = detail.Value.ToString();
+                                queryStrings.Add(name, value);
+                            }
+                        }
+                    }
+                    else  // it's an object. Let's just treat it as an object
+                    {
+                        JObject obj = JObject.Parse(documentContents);
+
+                        foreach (var details in obj)
+                        {
+                            var name = details.Key;
+                            var value = details.Value.ToString();
+                            queryStrings.Add(name, value);
+                        }
+                    }
 
 					if (method.Parameters.Any(param => queryStrings.All(q => q.Key != param.Name)))
 					{
