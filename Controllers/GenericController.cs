@@ -186,14 +186,13 @@ namespace DynamicPowerShellApi.Controllers
 
                     if (documentContents.StartsWith("[")) // it's an array. Let's use a horrible nested loop                        
                     {
-                        JArray token = JArray.Parse(documentContents);
-                        foreach (JObject details in token)
-                        {
-                            JObject jobj = (JObject)details;
-                            foreach (var o in jobj)
+                        JArray tokenArray = JArray.Parse(documentContents);
+                        foreach (JObject details in tokenArray)
+                        {                            
+                            foreach (var detail in details)
                             { 
-                                var name = o.Key;
-                                var value = o.Value.ToString();
+                                var name = detail.Key;
+                                var value = detail.Value.ToString();
                                 queryStrings.Add(name, value);
                             }
                         }
@@ -207,7 +206,6 @@ namespace DynamicPowerShellApi.Controllers
                             var name = details.Key;
                             var value = details.Value.ToString();
                             queryStrings.Add(name, value);
-
                         }
                     }
 
