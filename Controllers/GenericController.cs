@@ -1,24 +1,23 @@
-﻿using System.IO;
-using System.Management.Automation;
-using System.Web.Http.Results;
-using DynamicPowerShellApi.Jobs;
+﻿using DynamicPowerShellApi.Jobs;
 using DynamicPowerShellApi.Logging;
 using DynamicPowerShellApi.Model;
+using Microsoft.Owin;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace DynamicPowerShellApi.Controllers
 {
 	using Configuration;
 	using Exceptions;
-	using Microsoft.Owin;
-	using Newtonsoft.Json.Linq;
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Net;
-	using System.Net.Http;
-	using System.Threading.Tasks;
-	using System.Web.Http;
+	using System.Management.Automation;
 
 	/// <summary>
 	/// Generic controller for running PowerShell commands.
@@ -74,7 +73,7 @@ namespace DynamicPowerShellApi.Controllers
 		[AllowAnonymous]
 		public HttpResponseMessage Status()
 		{
-			return new HttpResponseMessage {Content = new StringContent("OK")};
+			return new HttpResponseMessage{ Content = new StringContent("OK") };
 		}
 
 		[Route("jobs")]
@@ -105,12 +104,15 @@ namespace DynamicPowerShellApi.Controllers
 			string jobPath = Path.Combine(WebApiConfiguration.Instance.Jobs.JobStorePath, jobId + ".json");
 
 			if (File.Exists(jobPath))
+			{
 				using (TextReader reader = new StreamReader(jobPath))
 				{
-					dynamic d = JObject.Parse(reader.ReadToEnd());
-					return d;
+					dynamic jobData = JObject.Parse(reader.ReadToEnd());
+
+					return jobData;
 				}
-			
+			}
+
 			return new ErrorResponse
 			{
 				ActivityId = Guid.NewGuid(),
@@ -169,72 +171,87 @@ namespace DynamicPowerShellApi.Controllers
 				DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Cannot find the requested web method: {0}", methodName));
 				throw new WebMethodNotFoundException(string.Format("Cannot find web method: {0}", methodName));
 			}
-			
+
 			// Is this scheduled as a job?
 			bool asJob = method.AsJob;
 
 			// Is this a POST method
-			IEnumerable<KeyValuePair<string, string>> query2;			
+			var commandParameters = new Dictionary<string, string>();
 			if (Request.Method == HttpMethod.Post)
 			{
-				string documentContents = await Request.Content.ReadAsStringAsync();
+				string requestContentType = request.Content?.Headers?.ContentType?.MediaType ?? "none";
+				string requestBody = await Request.Content.ReadAsStringAsync();
 
 				try
 				{
-					// Work out the parameters from JSON
-					var queryStrings = new Dictionary<string, string>();
-
-                    if (documentContents.StartsWith("[")) // it's an array. Let's use a horrible nested loop                        
-                    {
-                        JArray tokenArray = JArray.Parse(documentContents);
-                        foreach (JObject details in tokenArray)
-                        {                            
-                            foreach (var detail in details)
-                            { 
-                                var name = detail.Key;
-                                var value = detail.Value.ToString();
-                                queryStrings.Add(name, value);
-                            }
-                        }
-                    }
-                    else  // it's an object. Let's just treat it as an object
-                    {
-                        JObject obj = JObject.Parse(documentContents);
-
-                        foreach (var details in obj)
-                        {
-                            var name = details.Key;
-                            var value = details.Value.ToString();
-                            queryStrings.Add(name, value);
-                        }
-                    }
-
-					if (method.Parameters.Any(param => queryStrings.All(q => q.Key != param.Name)))
+					// Parse request parameters
+					if (requestContentType == "application/json")
 					{
-						DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Cannot find all parameters required."));
+						JToken requestJson = JToken.Parse(requestBody);
+						JArray multipleParameters = requestJson as JArray;
+						JObject singleParameter = requestJson as JObject;
+
+						Action<JProperty> parseParameterProperty = property =>
+						{
+							commandParameters.Add(
+								key: property.Name,
+								value: property.Value.Type != JTokenType.Null ? property.Value.ToString() : null
+							);
+						};
+
+						if (multipleParameters != null)
+						{
+							foreach (JObject parameter in multipleParameters)
+							{
+								foreach (JProperty parameterProperty in parameter.Properties())
+									parseParameterProperty(parameterProperty);
+							}
+						}
+						else if (singleParameter != null)
+						{
+							foreach (JProperty parameterProperty in singleParameter.Properties())
+								parseParameterProperty(parameterProperty);
+						}
+					}
+
+					// TODO: Add support for x-www-form-urlencoded content.
+
+					Parameter missingRequiredParameter = method.Parameters.FirstOrDefault(
+						param => !param.IsOptional && !commandParameters.ContainsKey(param.Name)
+					);
+					if (missingRequiredParameter != null)
+					{
+						DynamicPowershellApiEvents.Raise.VerboseMessaging(
+							$"Cannot find required parameter '{missingRequiredParameter.Name}'."
+						);
+
 						throw new MissingParametersException("Cannot find all parameters required.");
 					}
-											
-					query2 = queryStrings.ToList();
 				}
-				catch (Exception )
+				catch (Exception)
 				{
 					DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Cannot find all parameters required."));
 					throw new MissingParametersException("Cannot find all parameters required.");
-				}				
+				}
 			}
 			else
 			{
 				// Get our parameters.
-				IEnumerable<KeyValuePair<string, string>> query = Request.GetQueryNameValuePairs();
-				if (method.Parameters.Any(param => query.All(q => q.Key != param.Name)))
+				foreach (var nameValuePair in Request.GetQueryNameValuePairs())
+					commandParameters[nameValuePair.Key] = nameValuePair.Value;
+				
+				Parameter missingRequiredParameter = method.Parameters.FirstOrDefault(
+					param => !param.IsOptional && !commandParameters.ContainsKey(param.Name)
+				);
+				if (missingRequiredParameter != null)
 				{
-					DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Cannot find all parameters required."));
+					DynamicPowershellApiEvents.Raise.VerboseMessaging(
+						$"Cannot find required parameter '{missingRequiredParameter.Name}'."
+					);
+
 					throw new MissingParametersException("Cannot find all parameters required.");
 				}
-
-				query2 = query;
-			}			
+			}
 
 			// We now catch an exception from the runner
 			try
@@ -244,10 +261,10 @@ namespace DynamicPowerShellApi.Controllers
 				if (!asJob)
 				{
 					PowershellReturn output =
-						await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, method.Module, query2.ToList(), asJob);
+						await _powershellRunner.ExecuteAsync(method.PowerShellPath, method.Snapin, method.Module, commandParameters.ToList(), asJob);
 
 					JToken token = output.ActualPowerShellData.StartsWith("[")
-						? (JToken) JArray.Parse(output.ActualPowerShellData)
+						? (JToken)JArray.Parse(output.ActualPowerShellData)
 						: JObject.Parse(output.ActualPowerShellData);
 
 					return new HttpResponseMessage
@@ -263,7 +280,7 @@ namespace DynamicPowerShellApi.Controllers
 					if (Request.Properties.ContainsKey("MS_OwinContext"))
 						requestedHost = ((OwinContext)Request.Properties["MS_OwinContext"]).Request.RemoteIpAddress;
 
-					_jobListProvider.AddRequestedJob(jobId, requestedHost );
+					_jobListProvider.AddRequestedJob(jobId, requestedHost);
 
 					// Go off and run this job please sir.
 					var task = Task<bool>.Factory.StartNew(
@@ -271,12 +288,12 @@ namespace DynamicPowerShellApi.Controllers
 						{
 							try
 							{
-								Task<PowershellReturn> goTask =  
+								Task<PowershellReturn> goTask =
 								_powershellRunner.ExecuteAsync(
 										method.PowerShellPath,
 										method.Snapin,
 										method.Module,
-										query2.ToList(),
+										commandParameters.ToList(),
 										true);
 
 								goTask.Wait();
@@ -307,7 +324,7 @@ namespace DynamicPowerShellApi.Controllers
 								{
 									Exceptions = poException.Exceptions,
 									LogTime = poException.LogTime,
-									RequestAddress = requestedHost, 
+									RequestAddress = requestedHost,
 									RequestMethod = methodName,
 									RequestUrl = Request.RequestUri.ToString()
 								};
@@ -342,7 +359,7 @@ namespace DynamicPowerShellApi.Controllers
 							}
 						}
 					);
-					
+
 					// return the Job ID.
 					return new HttpResponseMessage
 					{
@@ -365,14 +382,14 @@ namespace DynamicPowerShellApi.Controllers
 
 				DynamicPowershellApiEvents.Raise.InvalidPowerShellOutput(poException.Message + " logged to " + logFile);
 
-				HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.InternalServerError, 
+				HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.InternalServerError,
 						new ErrorResponse
 						{
 							ActivityId = activityId,
 							LogFile = logFile,
 							Message = poException.Message
 						}
-						);				
+						);
 
 				return response;
 			}
@@ -400,17 +417,17 @@ namespace DynamicPowerShellApi.Controllers
 
 				DynamicPowershellApiEvents.Raise.UnhandledException(ex.Message + " logged to " + logFile, ex.StackTrace ?? String.Empty);
 
-				HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.InternalServerError, 
+				HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.InternalServerError,
 						new ErrorResponse
 						{
 							ActivityId = activityId,
 							LogFile = logFile,
 							Message = ex.Message
 						}
-						);				
+						);
 
 				return response;
-			}			
+			}
 		}
 	}
 }

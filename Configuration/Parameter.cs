@@ -30,5 +30,17 @@ namespace DynamicPowerShellApi.Configuration
 				return (string)this["Type"];
 			}
 		}
+
+		/// <summary>
+		/// Determines whether the parameter is optional.
+		/// </summary>
+		[ConfigurationProperty("IsOptional", DefaultValue = false)]
+		public bool IsOptional
+		{
+			get
+			{
+				return (bool)this["IsOptional"];
+			}
+		}
 	}
 }
