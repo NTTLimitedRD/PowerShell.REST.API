@@ -209,10 +209,10 @@ namespace DynamicPowerShellApi.Controllers
                         }
                     }
 
-					if (method.Parameters.Any(param => queryStrings.All(q => q.Key != param.Name)))
+					if (method.Parameters.Any(param => queryStrings.All(q => q.Key != param.Name))) 
 					{
 						DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Cannot find all parameters required."));
-						throw new MissingParametersException("Cannot find all parameters required.");
+						// throw new MissingParametersException("Cannot find all parameters required."); // let's not throw if our incoming request has param missing
 					}
 											
 					query2 = queryStrings.ToList();
