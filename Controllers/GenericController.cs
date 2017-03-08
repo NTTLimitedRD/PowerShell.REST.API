@@ -188,16 +188,16 @@ namespace DynamicPowerShellApi.Controllers
                     {
                         JArray tokenArray = JArray.Parse(documentContents);
                         foreach (JObject details in tokenArray)
-                        {                            
+                        {
                             foreach (var detail in details)
-                            { 
+                            {
                                 var name = detail.Key;
                                 var value = detail.Value.ToString();
                                 queryStrings.Add(name, value);
                             }
                         }
                     }
-                    else  // it's an object. Let's just treat it as an object
+                    else if (documentContents.StartsWith("{"))  // it's an object. Let's treat it as an object
                     {
                         JObject obj = JObject.Parse(documentContents);
 
@@ -208,19 +208,28 @@ namespace DynamicPowerShellApi.Controllers
                             queryStrings.Add(name, value);
                         }
                     }
+                    else // it's kvp. Experimental
+                    {
+                        System.Collections.Specialized.NameValueCollection body = await Request.Content.ReadAsFormDataAsync();
+                        var items = body.AllKeys.SelectMany(body.GetValues, (k, v) => new { key = k, value = v });
+                        foreach (var item in items)
+                        {
+                            queryStrings.Add(item.key, item.value.ToString());
+                        }
+                    }
 
 					if (method.Parameters.Any(param => queryStrings.All(q => q.Key != param.Name))) 
 					{
 						DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Cannot find all parameters required."));
-						// throw new MissingParametersException("Cannot find all parameters required."); // let's not throw if our incoming request has param missing
+						// throw new MissingParametersException("Cannot find all parameters required."); // let's not throw if our incoming request has a param missing
 					}
 											
 					query2 = queryStrings.ToList();
 				}
-				catch (Exception )
+				catch (Exception e)
 				{
 					DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Cannot find all parameters required."));
-					throw new MissingParametersException("Cannot find all parameters required.");
+					throw new MissingParametersException("Cannot find all parameters required (POST)." + e.Message);
 				}				
 			}
 			else
