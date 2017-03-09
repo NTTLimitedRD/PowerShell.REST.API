@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -213,25 +214,35 @@ namespace DynamicPowerShellApi.Controllers
 								parseParameterProperty(parameterProperty);
 						}
 					}
+					else if (requestContentType == "x-www-form-urlencoded")
+					{
+						NameValueCollection formFields = await Request.Content.ReadAsFormDataAsync();
+						foreach (string formFieldName in formFields.AllKeys)
+						{
+							commandParameters.Add(
+								key: formFieldName,
+								value: formFields[formFieldName]
+							);
+						}
+					}
 
-					// TODO: Add support for x-www-form-urlencoded content.
-
-					Parameter missingRequiredParameter = method.Parameters.FirstOrDefault(
-						param => !param.IsOptional && !commandParameters.ContainsKey(param.Name)
+					Parameter missingRequiredParameter = method.Parameters.Required.FirstOrDefault(
+						param => !commandParameters.ContainsKey(param.Name)
 					);
 					if (missingRequiredParameter != null)
 					{
-						DynamicPowershellApiEvents.Raise.VerboseMessaging(
-							$"Cannot find required parameter '{missingRequiredParameter.Name}'."
-						);
+						string errorMessage = $"Cannot find required parameter '{missingRequiredParameter.Name}'.";
+						DynamicPowershellApiEvents.Raise.VerboseMessaging(errorMessage);
 
-						throw new MissingParametersException("Cannot find all parameters required.");
+						throw new MissingParametersException(errorMessage);
 					}
 				}
-				catch (Exception)
+				catch (Exception eParseRequestJson)
 				{
-					DynamicPowershellApiEvents.Raise.VerboseMessaging(String.Format("Cannot find all parameters required."));
-					throw new MissingParametersException("Cannot find all parameters required.");
+					string errorMessage = "Unexpected error while parsing parameters from request body: " + eParseRequestJson.Message;
+					DynamicPowershellApiEvents.Raise.VerboseMessaging(errorMessage);
+
+					throw new MissingParametersException(errorMessage);
 				}
 			}
 			else
@@ -240,16 +251,15 @@ namespace DynamicPowerShellApi.Controllers
 				foreach (var nameValuePair in Request.GetQueryNameValuePairs())
 					commandParameters[nameValuePair.Key] = nameValuePair.Value;
 				
-				Parameter missingRequiredParameter = method.Parameters.FirstOrDefault(
-					param => !param.IsOptional && !commandParameters.ContainsKey(param.Name)
+				Parameter missingRequiredParameter = method.Parameters.Required.FirstOrDefault(
+					param => !commandParameters.ContainsKey(param.Name)
 				);
 				if (missingRequiredParameter != null)
 				{
-					DynamicPowershellApiEvents.Raise.VerboseMessaging(
-						$"Cannot find required parameter '{missingRequiredParameter.Name}'."
-					);
+					string errorMessage = $"Cannot find required parameter '{missingRequiredParameter.Name}'.";
+					DynamicPowershellApiEvents.Raise.VerboseMessaging(errorMessage);
 
-					throw new MissingParametersException("Cannot find all parameters required.");
+					throw new MissingParametersException(errorMessage);
 				}
 			}
 

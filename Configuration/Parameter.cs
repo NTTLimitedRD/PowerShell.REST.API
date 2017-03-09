@@ -42,5 +42,10 @@ namespace DynamicPowerShellApi.Configuration
 				return (bool)this["IsOptional"];
 			}
 		}
+
+		/// <summary>
+		/// Determines whether the parameter is required (configured via <see cref="IsOptional"/>).
+		/// </summary>
+		public bool IsRequired => !IsOptional;
 	}
 }

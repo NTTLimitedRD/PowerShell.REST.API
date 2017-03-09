@@ -1,6 +1,5 @@
 namespace DynamicPowerShellApi.Configuration
 {
-	using System.Collections;
 	using System.Collections.Generic;
 	using System.Configuration;
 	using System.Linq;
@@ -105,5 +104,15 @@ namespace DynamicPowerShellApi.Configuration
 				yield return BaseGet(i) as Parameter;
 			}
 		}
+
+		/// <summary>
+		///		All required (non-optional) parameters.
+		/// </summary>
+		public IEnumerable<Parameter> Required => this.Where(parameter => parameter.IsRequired);
+
+		/// <summary>
+		///		All optional parameters.
+		/// </summary>
+		public IEnumerable<Parameter> Optional => this.Where(parameter => parameter.IsOptional);
 	}
 }
